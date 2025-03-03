@@ -1,0 +1,17 @@
+{
+  "elements": [
+    {"type": "Q", "value": 90.0, "node1": 0, "node2": 1, "name": "I1"},
+    {"type": "R", "value": 1.9, "node1": 1, "node2": 2, "name": "R1"},
+    {"type": "L", "value": 4.0, "node1": 2, "node2": 3, "name": "L1"},
+    {"type": "R", "value": 7.0, "node1": 3, "node2": 4, "name": "R2"},
+    {"type": "L", "value": 8.0, "node1": 4, "node2": 5, "name": "L2"},
+    {"type": "R", "value": 681.0, "node1": 5, "node2": 6, "name": "R4"},
+    {"type": "R", "value": 7.0, "node1": 3, "node2": 7, "name": "R3"},
+    {"type": "L", "value": 8.0, "node1": 7, "node2": 8, "name": "L3"},
+    {"type": "R", "value": 681.0, "node1": 8, "node2": 9, "name": "R5"},
+    {"type": "R", "value": 31013.0, "node1": 9, "node2": 0, "name": "R6"},
+    {"type": "R", "value": 31013.0, "node1": 6, "node2": 0, "name": "R7"},
+    {"type": "C", "value": 300e-6, "node1": 6, "node2": 0, "name": "C1"},
+    {"type": "C", "value": 300e-6, "node1": 9, "node2": 0, "name": "C2"}
+  ]
+}
