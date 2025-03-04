@@ -33,20 +33,20 @@ class Netlist(NamedTuple):
 # ACL arrays
 class VesselFeatures(NamedTuple):
     vessel_ids: jnp.ndarray  # (NV X 1)
-    vessel_areas: jnp.ndarray  # (NV X NL)
-    vessel_curvatures: jnp.ndarray  # (NV X NL)
-    vessel_lengths: jnp.ndarray  # (NV X NL)
+    vessel_areas: jnp.ndarray  # (NV X N_seg)
+    vessel_curvatures: jnp.ndarray  # (NV X N_seg)
+    vessel_lengths: jnp.ndarray  # (NV X N_seg)
     vessel_base_resistances: (
         jnp.ndarray
-    )  # (NV X NL) (Poisuille + Stenosis + Curvature effects)
+    )  # (NV X 1) (Poisuille + Stenosis + Curvature effects)
+    vessel_resistances: jnp.ndarray  # (NV X 1) # after non-linear update
 
 
-def read_acl_features(
+def create_vessel_features(
     file_path: str, vessel_ids: jnp.ndarray, cumsum_array: jnp.ndarray
 ):
     acl_data = np.loadtxt(file_path)
     n_vessels = vessel_ids.shape[0]
-    # first row of cumsum_array is 0,second row dictates the number of segments
     n_segments = cumsum_array[1, 0]
 
     vessel_areas = np.zeros((n_vessels, n_segments))
@@ -67,13 +67,17 @@ def read_acl_features(
     vessel_areas = jnp.array(vessel_areas, float)
     vessel_curvatures = jnp.array(vessel_curvatures, float)
     vessel_lengths = jnp.array(vessel_lengths, float)
-    vessel_base_resistances = jnp.zeros((n_vessels, n_segments), float)
+
+    vessel_base_resistances = jnp.zeros((n_vessels, 1), float)
+    vessel_resistances = jnp.zeros((n_vessels, 1), float)
+
     return VesselFeatures(
         vessel_ids,
         vessel_areas,
         vessel_curvatures,
         vessel_lengths,
         vessel_base_resistances,
+        vessel_resistances,
     )
 
 
@@ -171,10 +175,87 @@ def update_non_linear_resistances(
     vessel_features: VesselFeatures,
     netlist: Netlist,
     X: jnp.ndarray,
+) -> Netlist:
+    NV = vessel_features.vessel_ids.shape[0]
+    resistance = jnp.zeros_like(vessel_features.vessel_base_resistances)
+
+    def scan_fn(carry, idx):
+        element_id = vessel_features.vessel_ids[idx]
+        area = vessel_features.vessel_areas[idx]
+        curv = vessel_features.vessel_curvatures[idx]
+        R = vessel_features.vessel_base_resistances[idx]
+
+        node1 = netlist.nodes[element_id, 0]
+        node2 = netlist.nodes[element_id, 1]
+
+        q = get_flowrate_at_resistor(
+            X, netlist.element_values[element_id], node1, node2
+        )
+        radius = jnp.sqrt(area / jnp.pi)
+
+        De = ((2 * RHO * q / jnp.pi / MU) / radius) * (jnp.sqrt(radius / curv))
+
+        def compute_mo(De):
+            mo = (
+                0.1008
+                * jnp.sqrt(De)
+                * (jnp.sqrt(1 + 1.729 / De) - 1.315 / jnp.sqrt(De)) ** (-3)
+            )
+            return jnp.mean(mo)
+
+        Mo = jax.lax.cond(
+            jnp.logical_or(jnp.mean(curv) < 0, jnp.mean(curv) > 50),
+            lambda _: 1.0,
+            lambda _: jax.lax.cond(
+                jnp.mean(De[0, 1:-1]) > 10,
+                lambda _: compute_mo(De),
+                lambda _: 1.0,
+                None,
+            ),
+            None,
+        )
+
+        carry = carry.at[idx].set(R * Mo)
+        return carry, None
+
+    resistance, _ = jax.lax.scan(scan_fn, resistance, jnp.arange(NV))
+    netlist_to_return = update_element_values(
+        netlist, vessel_features.vessel_ids, resistance
+    )
+    return netlist_to_return
+
+
+@partial(jax.jit, static_argnums=(3, 4))  # size, n_nodes, dt, max_iter are static
+def fixed_point_non_linear_solve(
+    vessel_features: VesselFeatures,
+    netlist: Netlist,
+    X: jnp.ndarray,
+    size,
+    n_nodes,
+    dt: float,
+    max_iter=10,
+    tol=1e-5,
 ):
-    vessel_ids = vessel_features.vessel_ids
-    current_resistance_values = netlist.element_values[vessel_ids]
-    node1, node2 = netlist.nodes[vessel_ids]
+    def iteration_step(carry):
+        X_curr, netlist_curr, converged, iter_num = carry
+        G, b = assemble_matrices(netlist_curr, size, n_nodes, dt, X_curr)
+        X_next = jnp.linalg.solve(G, b)
+        netlist_updated = update_non_linear_resistances(
+            vessel_features, netlist_curr, X_next
+        )
+        residual = jnp.linalg.norm(X_next - X_curr)
+        is_converged = residual < tol
+        return (X_next, netlist_updated, is_converged, iter_num + 1)
+
+    def cond_fun(carry):
+        _, _, converged, iter_num = carry
+        return jnp.logical_and(jnp.logical_not(converged), iter_num < max_iter)
+
+    init_carry = (X, netlist, False, 0)
+    (X_final, netlist_final, converged, iterations) = jax.lax.while_loop(
+        cond_fun, iteration_step, init_carry
+    )
+    return netlist_final, X_final
 
 
 def capacitor_stamp(C, elem_type, value, node1, node2):
@@ -316,4 +397,4 @@ def row_max_scale(matrix, vector):
 
 
 def module_test():
-    print("Module test for netlist_v4.py passed!")
+    print("Module test for netlist_v5.py passed!")
