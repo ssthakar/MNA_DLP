@@ -6,6 +6,7 @@ import numpy as np
 from typing import Dict, List, NamedTuple, Tuple
 
 # GLOBALS
+DEBUG = False
 
 element_type_map = {
     "R": 0,  # resistor
@@ -81,6 +82,7 @@ def create_vessel_features(
     )
 
 
+# TODO: implement boolean flag for parameters that need to be optimized from within the json file itself.
 def read_base_elements(file_path: str) -> List[Dict]:
     with open(file_path, "r") as f:
         data = json.load(f)
@@ -94,7 +96,8 @@ def create_netlist(file_path: str) -> Netlist:
     elements = jnp.array([type_map[e["type"]] for e in base_elements])
     element_values = jnp.array([e["value"] for e in base_elements])
     nodes = jnp.array([[e["node1"], e["node2"]] for e in base_elements], int)
-    print("nodes", nodes)
+
+    # print("nodes", nodes)
 
     n_nodes = int(jnp.max(nodes))
 
@@ -131,6 +134,17 @@ def update_element_values(
     )
 
 
+def update_vessel_features(vessel_features, new_resistances):
+    return VesselFeatures(
+        vessel_ids=vessel_features.vessel_ids,
+        vessel_areas=vessel_features.vessel_areas,
+        vessel_curvatures=vessel_features.vessel_curvatures,
+        vessel_lengths=vessel_features.vessel_lengths,
+        vessel_base_resistances=vessel_features.vessel_base_resistances,
+        vessel_resistances=new_resistances,
+    )
+
+
 def resistor_stamp(G, elem_type, value, node1, node2):
     conductance = 1.0 / value
 
@@ -160,30 +174,35 @@ def resistor_stamp(G, elem_type, value, node1, node2):
 
 
 def get_flowrate_at_resistor(
-    X,  # current solution
+    X,
     value,
     node1,
     node2,
 ):
     conductance = 1.0 / value
-    flowrate = conductance * (X[node1 - 1] - X[node2 - 1])
+    flowrate = jax.lax.cond(
+        node2 == 0,
+        lambda _: conductance * X[node1 - 1],  # ground resistor
+        lambda _: conductance * (X[node1 - 1] - X[node2 - 1]),  # internal resistor
+        None,
+    )
     return flowrate
 
 
-# update the resistance
 def update_non_linear_resistances(
     vessel_features: VesselFeatures,
     netlist: Netlist,
     X: jnp.ndarray,
 ) -> Netlist:
     NV = vessel_features.vessel_ids.shape[0]
-    resistance = jnp.zeros_like(vessel_features.vessel_base_resistances)
+    vessel_resistances = jnp.zeros_like(vessel_features.vessel_base_resistances)
 
+    # scans through all the vessels
     def scan_fn(carry, idx):
         element_id = vessel_features.vessel_ids[idx]
         area = vessel_features.vessel_areas[idx]
         curv = vessel_features.vessel_curvatures[idx]
-        R = vessel_features.vessel_base_resistances[idx]
+        R_base = vessel_features.vessel_base_resistances[idx]
 
         node1 = netlist.nodes[element_id, 0]
         node2 = netlist.nodes[element_id, 1]
@@ -192,7 +211,6 @@ def update_non_linear_resistances(
             X, netlist.element_values[element_id], node1, node2
         )
         radius = jnp.sqrt(area / jnp.pi)
-
         De = ((2 * RHO * q / jnp.pi / MU) / radius) * (jnp.sqrt(radius / curv))
 
         def compute_mo(De):
@@ -207,62 +225,40 @@ def update_non_linear_resistances(
             jnp.logical_or(jnp.mean(curv) < 0, jnp.mean(curv) > 50),
             lambda _: 1.0,
             lambda _: jax.lax.cond(
-                jnp.mean(De[1:-1]) > 10,
+                jnp.mean(De) > 10,
                 lambda _: compute_mo(De),
                 lambda _: 1.0,
                 None,
             ),
             None,
         )
-
-        carry = carry.at[idx].set(R * Mo)
+        R_new = R_base * Mo + 0.001 * q[0] ** 2
+        carry = carry.at[idx].set(R_new)
         return carry, None
 
-    resistance, _ = jax.lax.scan(scan_fn, resistance, jnp.arange(NV))
-    jax.debug.print("resistance {}", resistance)
-    netlist_to_return = update_element_values(
-        netlist, vessel_features.vessel_ids, resistance
+    vessel_resistances_updated, _ = jax.lax.scan(
+        scan_fn, vessel_resistances, jnp.arange(NV)
     )
+
+    netlist_to_return = update_element_values(
+        netlist, vessel_features.vessel_ids, vessel_resistances_updated
+    )
+
+    _ = jax.lax.cond(
+        DEBUG,
+        lambda _: jax.debug.print(
+            "updated netlist values : {} vs older netlist vlaues : {}",
+            netlist_to_return.element_values,
+            netlist.element_values,
+        ),
+        lambda _: None,
+        None,
+    )
+
     return netlist_to_return
 
 
-@partial(jax.jit, static_argnums=(4, 5))  # size, n_nodes, dt, max_iter are static
-def fixed_point_non_linear_solve_old(
-    vessel_features: VesselFeatures,
-    netlist: Netlist,
-    X_1: jnp.ndarray,
-    X_2: jnp.ndarray,
-    size,
-    n_nodes,
-    dt: float,
-    max_iter=10,
-    tol=1e-2,
-):
-    def iteration_step(carry):
-        X_curr, netlist_curr, converged, iter_num = carry
-        G, b = assemble_matrices(netlist_curr, size, n_nodes, dt, X_1, X_2)
-        X_next = jnp.linalg.solve(G, b)
-        netlist_updated = update_non_linear_resistances(
-            vessel_features, netlist_curr, X_next
-        )
-        residual = jnp.linalg.norm(X_next - X_curr)
-        jax.debug.print("residual {} {}", X_next[0, 0], X_curr[0, 0])
-        is_converged = residual < tol
-        return (X_next, netlist_updated, is_converged, iter_num + 1)
-
-    def cond_fun(carry):
-        _, _, converged, iter_num = carry
-        return jnp.logical_and(jnp.logical_not(converged), iter_num < max_iter)
-
-    init_carry = (X_1, netlist, False, 0)
-    (X_final, netlist_final, converged, iterations) = jax.lax.while_loop(
-        cond_fun, iteration_step, init_carry
-    )
-    # jax.debug.print("iterations {}", iterations)
-    return netlist_final, X_final
-
-
-@partial(jax.jit, static_argnums=(4, 5))  # size, n_nodes, dt, max_iter are static
+@partial(jax.jit, static_argnums=(4, 5))
 def fixed_point_non_linear_solve(
     vessel_features: VesselFeatures,
     netlist: Netlist,
@@ -271,7 +267,6 @@ def fixed_point_non_linear_solve(
     size,
     n_nodes,
     dt: float,
-    max_iter=10,
 ):
     def scan_fn(carry, _):
         X_curr, netlist_curr = carry
@@ -280,19 +275,10 @@ def fixed_point_non_linear_solve(
         netlist_updated = update_non_linear_resistances(
             vessel_features, netlist_curr, X_next
         )
-
-        residual = jnp.linalg.norm(X_next - X_curr)
-        jax.debug.print(
-            "residual {} {} {}",
-            X_next[0, 0],
-            X_curr[0, 0],
-            vessel_features.vessel_resistances,
-        )
         return (X_next, netlist_updated), None
 
     init_carry = (X_1, netlist)
     (X_final, netlist_final), _ = jax.lax.scan(scan_fn, init_carry, jnp.arange(10))
-    # jax.debug.print("iterations {}", iterations)
     return netlist_final, X_final
 
 
@@ -327,19 +313,50 @@ def capacitor_stamp(C, elem_type, value, node1, node2):
 def inductor_stamp(G, C, elem_type, value, node1, node2, inductor_index):
     inductance = value
 
-    def update_G(G):
+    def update_G_normal(G):
         G = G.at[node1 - 1, inductor_index].add(1)
         G = G.at[node2 - 1, inductor_index].add(-1)
         G = G.at[inductor_index, node1 - 1].add(1)
         G = G.at[inductor_index, node2 - 1].add(-1)
         return G
 
-    def update_C(C):
+    def update_C_normal(C):
         C = C.at[inductor_index, inductor_index].add(-inductance)
         return C
 
-    G = jax.lax.cond(elem_type == element_type_map["L"], update_G, lambda G: G, G)
-    C = jax.lax.cond(elem_type == element_type_map["L"], update_C, lambda C: C, C)
+    def update_G_ground(G):
+        G = G.at[node1 - 1, inductor_index].add(1)
+        G = G.at[inductor_index, node1 - 1].add(1)
+        return G
+
+    def update_C_ground(C):
+        C = C.at[inductor_index, inductor_index].add(-inductance)
+        return C
+
+    G = jax.lax.cond(
+        elem_type == element_type_map["L"],
+        lambda G: jax.lax.cond(
+            node2 == 0,
+            update_G_ground,
+            update_G_normal,
+            G,
+        ),
+        lambda G: G,
+        G,
+    )
+
+    C = jax.lax.cond(
+        elem_type == element_type_map["L"],
+        lambda C: jax.lax.cond(
+            node2 == 0,
+            update_C_ground,
+            update_C_normal,
+            C,
+        ),
+        lambda C: C,
+        C,
+    )
+
     return G, C
 
 
@@ -367,7 +384,7 @@ def flowrate_stamp(b, elem_type, value, node1, node2):
     return b
 
 
-@partial(jax.jit, static_argnums=(1, 2))  # size and n_nodes are static
+@partial(jax.jit, static_argnums=(1, 2))
 def assemble_matrices(
     netlist: Netlist,
     size: int,
@@ -392,6 +409,7 @@ def assemble_matrices(
     inductor_indices = inductor_indices * inductor_mask
     inductor_indices = inductor_indices + n_nodes
 
+    # scan over netlist elements
     def scan_fn(carry, x):
         G, C, b = carry
         elem_type, value, node1, node2, inductor_idx = x
@@ -413,6 +431,7 @@ def assemble_matrices(
 
     (G, C, b), _ = jax.lax.scan(scan_fn, (G, C, b), scan_inputs)
 
+    # BDF2 time stepping
     G_timestep = G + 3 / 2 * C / time_step_size
     b_timestep = b + 2 * C @ X_1 / time_step_size - 1 / 2 * C @ X_2 / time_step_size
 
@@ -423,10 +442,10 @@ def assemble_matrices(
     # jax.debug.print("G_scaled: {}", jnp.linalg.cond(G_scaled))
 
     return (G_scaled, b_scaled)
-    # return (G_timestep, b_timestep)
+    return (G_timestep, b_timestep)
 
 
-@partial(jax.jit, static_argnums=(2, 3, 7))
+@partial(jax.jit, static_argnums=(2, 3))
 def assemble_matrices_with_non_linear_solve(
     netlist: Netlist,  # 0
     vessel_features: VesselFeatures,  # 1
@@ -435,7 +454,6 @@ def assemble_matrices_with_non_linear_solve(
     time_step_size: float,  # 4
     X_1: jnp.ndarray,  # 5
     X_2: jnp.ndarray,  # 6
-    max_non_linear_iter: int = 10,  # 7
 ):
     updated_netlist, X = fixed_point_non_linear_solve(
         vessel_features,
@@ -445,7 +463,6 @@ def assemble_matrices_with_non_linear_solve(
         size,
         n_nodes,
         dt=time_step_size,
-        max_iter=max_non_linear_iter,
     )
     G, b = assemble_matrices(updated_netlist, size, n_nodes, time_step_size, X_1, X_2)
     return G, b, updated_netlist
@@ -453,7 +470,6 @@ def assemble_matrices_with_non_linear_solve(
 
 def row_max_scale(matrix, vector):
     row_maxes = jnp.max(jnp.abs(matrix), axis=1, keepdims=True)
-    # Avoid division by zero, why tf is this necessary?
     safe_maxes = jnp.maximum(row_maxes, 1e-10)
     scaled_matrix = matrix / safe_maxes
     scaled_vector = vector / safe_maxes
@@ -461,4 +477,4 @@ def row_max_scale(matrix, vector):
 
 
 def module_test():
-    print("Module test for netlist_v5.py passed!")
+    print("netlist version 7")

@@ -1,11 +1,15 @@
 import os
 import jax
 import src.model.netlist_v7 as netlist
+import src.solver.sim_v1 as sim
 from src.utils.fft import fft_data
 import time
 import jax.numpy as jnp
 import numpy as np
 import matplotlib.pyplot as plt
+from functools import partial
+import optax
+
 
 jax.config.update("jax_enable_x64", True)
 
@@ -54,66 +58,61 @@ Qin[0 : int(T / dt + 1), 0] = Q_inll[:, 0]
 for i in range(0, np1):
     Qin[int(i * T / dt + 1) : int(i * T / dt + 1 + T / dt), 0] = Q_inll[1:, 0]
 Qin = jnp.array(Qin, float)
-print(f"number of timesteps {Qin.shape}")
-Pin = np.zeros_like(Qin)
+Qin = Qin.flatten()
+print(Qin.shape)
+# Pin = np.zeros_like(Qin)
+plt.plot(Qin[-1100:])
+plt.grid(True)
+plt.show()
 
 # Get initial matrices
 G_test, b_test = netlist.assemble_matrices(test_netlist, size, n_nodes, dt, X_1, X_2)
 np.savetxt(output_path + "/G_test_1.dat", G_test, fmt="%.4f")
-Q1 = jnp.zeros_like(Pin)
-Q2 = jnp.zeros_like(Pin)
 
 # Define fixed point iteration parameters
 max_iter = 10
 tol = 1e-5
+# Define optimizer parameters
+target = jnp.array([35.0, 35.0])  # Example target value
+optimizer = optax.adam(1e-2)
+params = jnp.array([[400], [400]])  # Example parameter values (to be optimized)
+optim_ids = jnp.array([5, 8], int)
 
-# Main simulation loop with integrated non-linear solution
-prev_netlist = test_netlist
-for c in range(0, int(np1 * T / dt) + 1):
-    start_time = time.time()
+time_step = sim.create_time_step(size, n_nodes, optim_ids)
 
-    # Update flow source value
-    curr_netlist = netlist.update_element_values(
-        prev_netlist, jnp.array([0]), jnp.array(Qin[c, 0])
-    )
+init_carry = (test_netlist, X_1, X_2, vessel_features, dt)
 
-    # Use the assemble_matrices_non_linear function which integrates fixed point iteration
-    G_curr, b_curr, updated_netlist = netlist.assemble_matrices_with_non_linear_solve(
-        curr_netlist, vessel_features, size, n_nodes, dt, X_1, X_2
-    )
+total_start_time = time.time()
+final_carry, Pin = jax.lax.scan(time_step, init_carry, Qin)
+jax.block_until_ready(Pin)
+total_end_time = time.time()
 
-    # Solve the system with the assembled matrices
-    X = jnp.linalg.solve(G_curr, b_curr)
+print(f"Total simulation time: {total_end_time - total_start_time} seconds")
+print(Pin.shape)
 
-    end_time = time.time()
-    print(f" \n\nIteration {c}: {end_time - start_time} seconds\n\n")
+# @partial(jax.jit, static_argnums=(2, 3))
+# def run_simulation(init_carry, Qin, size, n_nodes):
+#     time_step_fn = sim.create_time_step(size, n_nodes)
+#     return jax.lax.scan(time_step_fn, init_carry, Qin)
+#
+#
+# start_time = time.time()
+# final_carry, Pin = run_simulation(init_carry, Qin, size, n_nodes)
+# jax.block_until_ready(Pin)
+# end_time = time.time()
+# print(f"Total simulation time: {end_time - start_time} seconds")
 
-    if jnp.isnan(b_curr).any() or jnp.isnan(X).any():
-        print("nan detected")
-        break
-    X_2 = X_1
-    X_1 = X
-
-    prev_netlist = updated_netlist
-    # Pin[c, 0] = X[0, 0]
-    P1 = X[4, 0]
-    P2 = X[6, 0]
-    Q1 = P1 / 681.0
-    Q2 = P2 / 681.0
-    Qi = Qin[c, 0]
-    Pin[c, 0] = Q1 + Q2 - Qi
-
-
-# Plot and save results
 plt.figure(figsize=(10, 6))
-plt.plot(Pin)
-plt.title("Pressure at Node 1 over Time")
+Pin = Pin[-1100:, 1] + Pin[-1100:, 2]
+Pin_avg = np.mean(Pin)
+print(Pin_avg)
+Pin_avg = np.ones_like(Pin) * Pin_avg
+plt.plot(Pin_avg, label="Average Pressure")
+plt.plot(Pin, label="Pressure at inlet")
+plt.plot(Qin[-1100:])
+plt.title("Pressure over Time")
 plt.xlabel("Time Steps")
 plt.ylabel("Pressure")
 plt.grid(True)
-plt.show()
 
-# Save results
-np.savetxt(output_path + "/Pin_transient_non_linear_1e-2.dat", Pin)
-np.savetxt(output_path + "/G_test_1.dat", G_test, fmt="%.4f")
-np.savetxt(output_path + "/b_test_1.dat", b_test, fmt="%.4f")
+plt.show()
