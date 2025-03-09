@@ -210,6 +210,7 @@ def update_non_linear_resistances(
         q = get_flowrate_at_resistor(
             X, netlist.element_values[element_id], node1, node2
         )
+
         radius = jnp.sqrt(area / jnp.pi)
         De = ((2 * RHO * q / jnp.pi / MU) / radius) * (jnp.sqrt(radius / curv))
 

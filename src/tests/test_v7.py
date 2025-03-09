@@ -1,7 +1,7 @@
 import os
 import jax
 import src.model.netlist_v7 as netlist
-import src.solver.sim_v1 as sim
+import src.solver.sim_v3 as sim
 from src.utils.fft import fft_data
 import time
 import jax.numpy as jnp
@@ -15,7 +15,7 @@ jax.config.update("jax_enable_x64", True)
 
 # paths to data
 current_dir = os.path.dirname(os.path.abspath(__file__))
-data_file_path = os.path.join(current_dir, "data", "elements.json")
+data_file_path = os.path.join(current_dir, "data", "elements_v0.json")
 all_files_path = os.path.join(current_dir, "data", "all_files")
 output_path = "./output"
 
@@ -73,10 +73,23 @@ np.savetxt(output_path + "/G_test_1.dat", G_test, fmt="%.4f")
 max_iter = 10
 tol = 1e-5
 # Define optimizer parameters
-target = jnp.array([2678.0])  # Example target value
-optimizer = optax.adam(1e0)
-params = jnp.array([660.00, 660.00])  # Example parameter values (to be optimized)
-optim_ids = jnp.array([5, 8], int)
+target = jnp.array([125584.0, 125584.0])  # Example target value
+optimizer = optax.adam(learning_rate=0.01)
+# params_in_phys_space = jnp.array(
+#     [660, 30000, 0.0002, 660, 30000, 0.0002], float
+# )
+params_in_phys_space = jnp.array([600, 29000, 0.0003, 600, 29000, 0.0003], float)
+# Example parameter values (to be optimized)
+param_scale = jnp.array([100, 10000, 0.0001, 100, 10000, 0.0001], float)
+params = params_in_phys_space / param_scale
+# print(params)
+# breakpoint()
+# R R
+# optim_ids = jnp.array([5, 9, 8, 10], int)
+# R CR
+optim_ids = jnp.array([5, 9, 11, 8, 10, 12], int)
+# R
+# optim_ids = jnp.array([5, 8], int)
 opt_state = optimizer.init(params)
 time_step = sim.create_time_step(size, n_nodes, optim_ids)
 
@@ -88,10 +101,11 @@ simulation = sim.create_cardiac_simulation(
 total_start_time = time.time()
 
 Pin = simulation()
-
+np.savetxt(output_path + "/Pin_2.dat", Pin, fmt="%.4f")
 cycle_data_p1_list = []
 loss_fn = sim.create_compute_loss(size, n_nodes, T, np1, dt, optim_ids)
-for i in range(1000):
+for i in range(0):
+    # print()
     start_time = time.time()
     # loss = sim.compute_loss(
     #     params, target, init_carry, Qin, size, n_nodes, T, np1, dt, optim_ids
@@ -104,7 +118,12 @@ for i in range(1000):
     jax.block_until_ready(loss)
     jax.block_until_ready(grads)
     end_time = time.time()
-    print(f"Loss: {loss}, Time: {end_time - start_time},params: {params}")
+    # print(
+    #     f"Loss: {loss}, grads:{grads}, Time: {end_time - start_time},params: {params * param_scale}"
+    # )
+    print(
+        f"Loss: {loss:.3f}, grads: {[f'{g:.3f}' for g in grads]}, Time: {end_time - start_time:.3f}, params: {[f'{p:.5f}' for p in (params * param_scale)]}"
+    )
 
 
 # breakpoint()
@@ -129,8 +148,9 @@ print(jnp.mean(Pin[:, 0:1]))
 # print(f"Total simulation time: {end_time - start_time} seconds")
 
 plt.figure(figsize=(10, 6))
-plt.plot(Pin[:, 1:2] + Pin[:, 2:3], label="Pressure at inlet")
-plt.plot(Qin[-111:], label="Flow rate at inlet")
+# plt.plot(Pin[:, 1:2] + Pin[:, 2:3], label="Pressure at inlet")
+plt.plot(Pin[:, 0:1] * 0.00075, label="Pressure at inlet")
+# plt.plot(Qin[-111:], label="Flow rate at inlet")
 plt.title("Pressure over Time")
 plt.xlabel("Time Steps")
 plt.ylabel("Pressure")

@@ -1,7 +1,7 @@
 import os
 import jax
 import src.model.netlist_v7 as netlist
-import src.solver.sim_v1 as sim
+import src.solver.sim_v2 as sim
 from src.utils.fft import fft_data
 import time
 import jax.numpy as jnp
@@ -15,7 +15,7 @@ jax.config.update("jax_enable_x64", True)
 
 # paths to data
 current_dir = os.path.dirname(os.path.abspath(__file__))
-data_file_path = os.path.join(current_dir, "data", "elements.json")
+data_file_path = os.path.join(current_dir, "data", "elements_v0.json")
 all_files_path = os.path.join(current_dir, "data", "all_files")
 output_path = "./output"
 
@@ -73,10 +73,11 @@ np.savetxt(output_path + "/G_test_1.dat", G_test, fmt="%.4f")
 max_iter = 10
 tol = 1e-5
 # Define optimizer parameters
-target = jnp.array([2678.0])  # Example target value
-optimizer = optax.adam(1e0)
-params = jnp.array([660.00, 660.00])  # Example parameter values (to be optimized)
-optim_ids = jnp.array([5, 8], int)
+target = jnp.array([125489.0, 125489.0])  # Example target value
+optimizer = optax.adam(1e-5)
+params = jnp.array([0.0001, 0.0001])  # Example parameter values (to be optimized)
+
+optim_ids = jnp.array([11, 12], int)
 opt_state = optimizer.init(params)
 time_step = sim.create_time_step(size, n_nodes, optim_ids)
 
@@ -88,10 +89,11 @@ simulation = sim.create_cardiac_simulation(
 total_start_time = time.time()
 
 Pin = simulation()
-
+np.savetxt(output_path + "/Pin_1.dat", Pin, fmt="%.4f")
 cycle_data_p1_list = []
 loss_fn = sim.create_compute_loss(size, n_nodes, T, np1, dt, optim_ids)
 for i in range(1000):
+    # print(f"printing param {params}")
     start_time = time.time()
     # loss = sim.compute_loss(
     #     params, target, init_carry, Qin, size, n_nodes, T, np1, dt, optim_ids
@@ -104,7 +106,9 @@ for i in range(1000):
     jax.block_until_ready(loss)
     jax.block_until_ready(grads)
     end_time = time.time()
-    print(f"Loss: {loss}, Time: {end_time - start_time},params: {params}")
+    print(
+        f"Loss: {loss}, grads:{grads}, Time: {end_time - start_time},params: {params}"
+    )
 
 
 # breakpoint()
@@ -129,8 +133,9 @@ print(jnp.mean(Pin[:, 0:1]))
 # print(f"Total simulation time: {end_time - start_time} seconds")
 
 plt.figure(figsize=(10, 6))
-plt.plot(Pin[:, 1:2] + Pin[:, 2:3], label="Pressure at inlet")
-plt.plot(Qin[-111:], label="Flow rate at inlet")
+# plt.plot(Pin[:, 1:2] + Pin[:, 2:3], label="Pressure at inlet")
+plt.plot(Pin[:, 0:1], label="Pressure at inlet")
+# plt.plot(Qin[-111:], label="Flow rate at inlet")
 plt.title("Pressure over Time")
 plt.xlabel("Time Steps")
 plt.ylabel("Pressure")
