@@ -1,0 +1,3 @@
+systolic pressure: 110.8166889570078
+diastolic pressure: 85.0875034035993
+mean pressure: 91.98144213009813

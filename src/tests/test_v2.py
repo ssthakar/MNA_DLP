@@ -11,7 +11,7 @@ jax.config.update("jax_enable_x64", True)
 
 # paths to data
 current_dir = os.path.dirname(os.path.abspath(__file__))
-data_file_path = os.path.join(current_dir, "data", "elements.json")
+data_file_path = os.path.join(current_dir, "data", "elements_v0.json")
 all_files_path = os.path.join(current_dir, "data", "all_files")
 output_path = "./output"
 
@@ -54,8 +54,8 @@ for i in range(0, np1):
     Qin[int(i * T / dt + 1) : int(i * T / dt + 1 + T / dt), 0] = Q_inll[1:, 0]
 Qin = jnp.array(Qin, float)
 print(Qin.shape)
-Pin = np.zeros_like(Qin)
-
+P1 = np.zeros_like(Qin)
+P2 = np.zeros_like(Qin)
 # Get initial matrices
 G_test, b_test = netlist.assemble_matrices(test_netlist, size, n_nodes, dt, X_prev)
 np.savetxt(output_path + "/G_test_1.dat", G_test, fmt="%.4f")
@@ -90,12 +90,15 @@ for c in range(0, int(np1 * T / dt) + 1):
         break
 
     X_prev = X
+    print(X.T)
     prev_netlist = updated_netlist
-    Pin[c, 0] = X[0, 0]
+    P1[c, 0] = X[4, 0]
+    P2[c, 0] = X[7, 0]
 
 # Plot and save results
 plt.figure(figsize=(10, 6))
-plt.plot(Pin)
+plt.plot(P1 * 0.00075)
+plt.plot(P2 * 0.00075)
 plt.title("Pressure at Node 1 over Time")
 plt.xlabel("Time Steps")
 plt.ylabel("Pressure")

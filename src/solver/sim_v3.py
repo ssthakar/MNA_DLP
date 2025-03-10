@@ -46,7 +46,21 @@ def create_time_step(
             optim_nodes[3, 0],
             optim_nodes[3, 1],
         )
-        p1 = X[optim_nodes[0, 0] - 1, 0]
+        # p1 = X[optim_nodes[0, 0] - 1, 0]
+
+        # we are tracking pressure at the inlet of the idealized bifurcation
+        p1 = X[0, 0]
+        # p2 = X[optim_nodes[3, 0] - 1, 0]
+
+        # jax.debug.print(
+        #     "printing out element values {}",
+        #     curr_netlist.element_values[optim_element_idx],
+        # )
+        #
+        # jax.debug.print(
+        #     "printing out nodes {} {}", optim_nodes[0, 0], optim_nodes[3, 0]
+        # )
+
         # tracked_data = jnp.array([p1, p2])
         # jax.debug.print("{} {}", q1 + q2, curr_Qin)
 
@@ -122,18 +136,20 @@ def create_compute_loss(size, n_nodes, T, np_1, dt, optim_idx):
         )
 
         tracked_data = cardiac_simulation()
-        p1_avg = jnp.mean(tracked_data[:, 0])
-        p1_max = jnp.max(tracked_data[:, 0])
-        p1_min = jnp.min(tracked_data[:, 0])
+        p1_avg = jnp.mean(tracked_data[:, 0]) * 0.00075
+        p1_max = jnp.max(tracked_data[:, 0]) * 0.00075
+        p1_min = jnp.min(tracked_data[:, 0]) * 0.00075
         # jax.debug.print("p1_avg {}", p1_avg)
         q1_avg = jnp.mean(tracked_data[:, 1])
 
         q2_avg = jnp.mean(tracked_data[:, 2])
-
+        target_systolic = 126.0211
+        target_diastolic = 72.04
+        target_mean = 94.27
         lagrangian_multiplier = 0.2
-        p1_loss = jnp.mean((p1_avg - target[0]) ** 2)
-        p1_sys = jnp.mean((p1_max - 169333) ** 2)
-        p1_dia = jnp.mean((p1_min - 96000) ** 2)
+        p1_loss = jnp.mean((p1_avg - target_mean) ** 2)
+        p1_sys = jnp.mean((p1_max - target_systolic) ** 2)
+        p1_dia = jnp.mean((p1_min - target_diastolic) ** 2)
         q_loss = jnp.mean((q1_avg - q2_avg) ** 2) * lagrangian_multiplier
         # jax.debug.print("p1_loss {} q_loss {}", p1_loss, q_loss)
         loss = p1_loss + q_loss + p1_sys + p1_dia

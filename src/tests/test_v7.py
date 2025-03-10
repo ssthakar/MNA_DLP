@@ -47,7 +47,7 @@ X_2 = X_1
 
 # time controls
 T = 1.1
-np1 = int(20)
+np1 = int(10)
 dt = 0.01
 
 # Boundary conditions
@@ -73,12 +73,18 @@ np.savetxt(output_path + "/G_test_1.dat", G_test, fmt="%.4f")
 max_iter = 10
 tol = 1e-5
 # Define optimizer parameters
+
+lr_schedule = optax.piecewise_constant_schedule(
+    init_value=0.01,
+    boundaries_and_scales={500: 10.0},  # Multiply by 10 at step 500 (0.01 * 10 = 0.1)
+)
+
 target = jnp.array([125584.0, 125584.0])  # Example target value
-optimizer = optax.adam(learning_rate=0.01)
+optimizer = optax.adam(learning_rate=0.1)
 # params_in_phys_space = jnp.array(
 #     [660, 30000, 0.0002, 660, 30000, 0.0002], float
 # )
-params_in_phys_space = jnp.array([600, 29000, 0.0003, 600, 29000, 0.0003], float)
+params_in_phys_space = jnp.array([600, 29000, 0.0005, 600, 29000, 0.0005], float)
 # Example parameter values (to be optimized)
 param_scale = jnp.array([100, 10000, 0.0001, 100, 10000, 0.0001], float)
 params = params_in_phys_space / param_scale
@@ -100,11 +106,11 @@ simulation = sim.create_cardiac_simulation(
 )
 total_start_time = time.time()
 
-Pin = simulation()
-np.savetxt(output_path + "/Pin_2.dat", Pin, fmt="%.4f")
+tracked_data = simulation()
+np.savetxt(output_path + "/tracked_3.dat", tracked_data, fmt="%.4f")
 cycle_data_p1_list = []
 loss_fn = sim.create_compute_loss(size, n_nodes, T, np1, dt, optim_ids)
-for i in range(0):
+for i in range(100):
     # print()
     start_time = time.time()
     # loss = sim.compute_loss(
@@ -121,19 +127,22 @@ for i in range(0):
     # print(
     #     f"Loss: {loss}, grads:{grads}, Time: {end_time - start_time},params: {params * param_scale}"
     # )
-    print(
-        f"Loss: {loss:.3f}, grads: {[f'{g:.3f}' for g in grads]}, Time: {end_time - start_time:.3f}, params: {[f'{p:.5f}' for p in (params * param_scale)]}"
-    )
+    if i % 10 == 0:
+        print(
+            f"Iteration : {i}, Loss: {loss:.3f}, grads: {[f'{g:.3f}' for g in grads]}, Time: {end_time - start_time:.3f}, params: {[f'{p:.6f}' for p in (params * param_scale)]}"
+        )
 
 
 # breakpoint()
 
 # final_carry, Pin = jax.lax.scan(time_step, init_carry, Qin)
-jax.block_until_ready(Pin)
+jax.block_until_ready(tracked_data)
 total_end_time = time.time()
 
 print(f"Total simulation time: {total_end_time - total_start_time} seconds")
-print(jnp.mean(Pin[:, 0:1]))
+print("tracked data shape", tracked_data.shape)
+print(jnp.mean(tracked_data[:, 0:1]))
+print(jnp.mean(tracked_data[:, 1:2]))
 
 # @partial(jax.jit, static_argnums=(2, 3))
 # def run_simulation(init_carry, Qin, size, n_nodes):
@@ -146,10 +155,15 @@ print(jnp.mean(Pin[:, 0:1]))
 # jax.block_until_ready(Pin)
 # end_time = time.time()
 # print(f"Total simulation time: {end_time - start_time} seconds")
+Pin = tracked_data[:, 0:1]
+Pin_scaled = Pin * 0.00075
+print(f"systolic pressure: {Pin_scaled.max()}")
+print(f"diastolic pressure: {Pin_scaled.min()}")
+print(f"mean pressure: {Pin_scaled.mean()}")
 
 plt.figure(figsize=(10, 6))
 # plt.plot(Pin[:, 1:2] + Pin[:, 2:3], label="Pressure at inlet")
-plt.plot(Pin[:, 0:1] * 0.00075, label="Pressure at inlet")
+plt.plot(tracked_data[:, 0:1] * 0.00075, label="Pressure at inlet")
 # plt.plot(Qin[-111:], label="Flow rate at inlet")
 plt.title("Pressure over Time")
 plt.xlabel("Time Steps")
