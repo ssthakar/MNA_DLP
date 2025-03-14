@@ -1,7 +1,7 @@
 import os
 import jax
-import src.model.netlist_v8 as netlist
-import src.solver.sim_v3 as sim
+import src.model.netlist_v7 as netlist
+import src.solver.sim_v4 as sim
 from src.utils.fft import fft_data
 import time
 import jax.numpy as jnp
@@ -47,7 +47,7 @@ X_2 = X_1
 
 # time controls
 T = 1.1
-np1 = int(10)
+np1 = int(20)
 dt = 0.01
 
 # Boundary conditions
@@ -80,7 +80,7 @@ lr_schedule = optax.piecewise_constant_schedule(
 )
 
 target = jnp.array([125584.0, 125584.0])  # Example target value
-optimizer = optax.adam(learning_rate=0.1)
+optimizer = optax.adam(learning_rate=0.01)
 # params_in_phys_space = jnp.array(
 #     [660, 30000, 0.0002, 660, 30000, 0.0002], float
 # )
@@ -94,7 +94,6 @@ params = params_in_phys_space / param_scale
 # optim_ids = jnp.array([5, 9, 8, 10], int)
 # R CR
 optim_ids = jnp.array([5, 9, 11, 8, 10, 12], int)
-optim
 # R
 # optim_ids = jnp.array([5, 8], int)
 opt_state = optimizer.init(params)
@@ -111,7 +110,7 @@ tracked_data = simulation()
 np.savetxt(output_path + "/tracked_3.dat", tracked_data, fmt="%.4f")
 cycle_data_p1_list = []
 loss_fn = sim.create_compute_loss(size, n_nodes, T, np1, dt, optim_ids)
-for i in range(0):
+for i in range(8000):
     # print()
     start_time = time.time()
     # loss = sim.compute_loss(
@@ -128,7 +127,9 @@ for i in range(0):
     # print(
     #     f"Loss: {loss}, grads:{grads}, Time: {end_time - start_time},params: {params * param_scale}"
     # )
-    if i % 10 == 0:
+    if loss < 0.0001:
+        break
+    if i % 1 == 0:
         print(
             f"Iteration : {i}, Loss: {loss:.3f}, grads: {[f'{g:.3f}' for g in grads]}, Time: {end_time - start_time:.3f}, params: {[f'{p:.6f}' for p in (params * param_scale)]}"
         )
@@ -157,18 +158,83 @@ print(jnp.mean(tracked_data[:, 1:2]))
 # end_time = time.time()
 # print(f"Total simulation time: {end_time - start_time} seconds")
 Pin = tracked_data[:, 0:1]
+Pout = tracked_data[:, 1:2]
 Pin_scaled = Pin * 0.00075
+Pout_scaled = Pout * 0.00075
+
 print(f"systolic pressure: {Pin_scaled.max()}")
 print(f"diastolic pressure: {Pin_scaled.min()}")
 print(f"mean pressure: {Pin_scaled.mean()}")
 
+print("outlet pressure vals")
+
+print(f"mean pressure: {Pout_scaled.mean()}")
+print(f"systolic pressure: {Pout_scaled.max()}")
+print(f"diastolic pressure: {Pout_scaled.min()}")
+
 plt.figure(figsize=(10, 6))
-# plt.plot(Pin[:, 1:2] + Pin[:, 2:3], label="Pressure at inlet")
+plt.title("Pressure over Time")
+plt.xlabel("Time Steps")
+plt.ylabel("Pressure")
+plt.grid(True)
 plt.plot(tracked_data[:, 0:1] * 0.00075, label="Pressure at inlet")
-# plt.plot(Qin[-111:], label="Flow rate at inlet")
+plt.show()
+plt.savefig("pressure_inlet_ground_truth.svg", format="svg")
+plt.savefig("pressure_inlet_ground_truth.png", format="png")
+plt.close()
+
+plt.figure(figsize=(10, 6))
+plt.title("Pressure over Time")
+plt.xlabel("Time Steps")
+plt.ylabel("Pressure")
+plt.grid(True)
+plt.plot(tracked_data[:, 0:1] * 0.00075, ls="-", label="Pressure at inlet")
+plt.plot(tracked_data[:, 1:2] * 0.00075, ls="-", label="Pressure at outlet 1")
+plt.plot(tracked_data[:, 2:3] * 0.00075, ls="-", label="Pressure at outlet 2")
+plt.legend()
+plt.show()
+
+plt.savefig("pressure_outlet_ground_truth.svg", format="svg")
+plt.savefig("pressure_outlet_ground_truth.png", format="png")
+plt.close()
+
+p_1_source = tracked_data[:, 2:3]
+p_1_sink = tracked_data[:, 3:4]
+
+p_2_source = tracked_data[:, 4:5]
+p_2_sink = tracked_data[:, 5:6]
+
+q1 = tracked_data[:, 3:4]
+q2 = tracked_data[:, 4:5]
+
+q1_avg = jnp.mean(q1)
+q2_avg = jnp.mean(q2)
+q1_avg = jnp.full_like(q1, q1_avg)
+q2_avg = jnp.full_like(q2, q2_avg)
+
+print("printing out q values {} {}", q1_avg, q2_avg)
+plt.plot(tracked_data[:, 3:4], label="q1")
+plt.plot(q1_avg, label="q1 avg")
+plt.plot(tracked_data[:, 4:5], label="q2")
+plt.plot(q2_avg, label="q2 avg")
+# plt.plot(q1 * 2, label="q1 * 2")
+plt.legend()
+plt.grid(True)
+plt.show()
+print(np.mean(tracked_data[:, 2:3] - 0.5 * tracked_data[:, 3:4]))
+# plt.show()
+
+
+plt.figure(figsize=(10, 6))
 plt.title("Pressure over Time")
 plt.xlabel("Time Steps")
 plt.ylabel("Pressure")
 plt.grid(True)
 
+# Using different dash styles for each line
+plt.plot(tracked_data[:, 0:1] * 0.00075, ls="-", label="Pressure at inlet")
+plt.plot(tracked_data[:, 1:2] * 0.00075, ls="--", label="Pressure at outlet 1")
+plt.plot(tracked_data[:, 2:3] * 0.00075, ls="-.", label="Pressure at outlet 2")
+
+plt.legend()
 plt.show()

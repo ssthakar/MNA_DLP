@@ -5,10 +5,7 @@ from functools import partial
 
 
 # implement closure to keep system size and n_nodes static through traces
-def create_time_step(
-    size,
-    n_nodes,
-):
+def create_time_step(size, n_nodes):
     # NOTE: applying jax.jit here is redundant as jax.lax.scan is primitive
     def time_step_fn(carry, x):
         prev_netlist, X_1, X_2, vessel_features, dt = carry
@@ -27,7 +24,7 @@ def create_time_step(
         new_X1 = X
         new_X2 = X_1
         # for plotting, not required in actual solver
-        pressure_inlet = X[5, 0]
+        pressure_inlet = X[0, 0]
         return (
             updated_netlist,
             new_X1,
@@ -43,7 +40,6 @@ def create_time_step(
 def cardiac_simulation(init_carry, Qin, size, n_nodes, T, np1, dt):
     max_steps = int(np1 * T / dt) + 1
     points_per_period = max_steps // np1
-
     cycle_data = jnp.zeros((points_per_period, 4))
 
     time_step = create_time_step(size, n_nodes)

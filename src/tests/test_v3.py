@@ -11,12 +11,18 @@ jax.config.update("jax_enable_x64", True)
 
 # paths to data
 current_dir = os.path.dirname(os.path.abspath(__file__))
-data_file_path = os.path.join(current_dir, "data", "elements.json")
+data_file_path = os.path.join(current_dir, "data", "elements_v1.json")
 all_files_path = os.path.join(current_dir, "data", "all_files")
 output_path = "./output"
 
 # Create netlist
 test_netlist = netlist.create_netlist(data_file_path)
+inductor_indices_test = netlist.create_inductor_index_mask(test_netlist)
+flowrate_indices_test = netlist.create_flowrate_query_indices(inductor_indices_test)
+print(flowrate_indices_test)
+print(inductor_indices_test)
+# breakpoint()
+
 
 # NOTE: until helper function, set manually
 vessel_ids = jnp.array([1, 3, 6], int)
@@ -41,6 +47,7 @@ X_1 = X_1 * initial_pressure
 X_1 = X_1.at[-3:, 0].set(0.1)
 X_2 = X_1
 
+print(X_1.shape)
 # time controls
 T = 1.1
 np1 = int(20)
@@ -58,8 +65,12 @@ print(f"number of timesteps {Qin.shape}")
 Pin = np.zeros_like(Qin)
 
 # Get initial matrices
-G_test, b_test = netlist.assemble_matrices(test_netlist, size, n_nodes, dt, X_1, X_2)
-np.savetxt(output_path + "/G_test_1.dat", G_test, fmt="%.4f")
+# G_test, b_test = netlist.assemble_matrices(test_netlist, size, n_nodes, dt, X_1, X_2)
+G_new, b_new = netlist.assemble_matrices(
+    test_netlist, size, inductor_indices_test, flowrate_indices_test, dt, X_1, X_2
+)
+np.savetxt(output_path + "/G_test_2.dat", G_new, fmt="%.4f")
+# breakpoint()
 Q1 = jnp.zeros_like(Pin)
 Q2 = jnp.zeros_like(Pin)
 
@@ -78,10 +89,10 @@ for c in range(0, int(np1 * T / dt) + 1):
     )
 
     # Use the assemble_matrices_non_linear function which integrates fixed point iteration
-    G_curr, b_curr, updated_netlist = netlist.assemble_matrices_with_non_linear_solve(
-        curr_netlist, vessel_features, size, n_nodes, dt, X_1, X_2
+    G_curr, b_curr = netlist.assemble_matrices(
+        curr_netlist, size, inductor_indices_test, flowrate_indices_test, dt, X_1, X_2
     )
-
+    np.savetxt(output_path + "/G_curr.dat", G_curr, fmt="%.4f")
     # Solve the system with the assembled matrices
     X = jnp.linalg.solve(G_curr, b_curr)
 
@@ -94,7 +105,7 @@ for c in range(0, int(np1 * T / dt) + 1):
     X_2 = X_1
     X_1 = X
 
-    prev_netlist = updated_netlist
+    prev_netlist = curr_netlist
     # Pin[c, 0] = X[0, 0]
     P1 = X[4, 0]
     P2 = X[6, 0]

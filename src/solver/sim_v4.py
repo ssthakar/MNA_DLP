@@ -40,6 +40,12 @@ def create_time_step(
             optim_nodes[0, 0],
             optim_nodes[0, 1],
         )
+        p_1_source = X[optim_nodes[0, 0] - 1, 0]
+        p_1_sink = X[optim_nodes[0, 1] - 1, 0]
+
+        p_2_source = X[optim_nodes[3, 0] - 1, 0]
+        p_2_sink = X[optim_nodes[3, 1] - 1, 0]
+
         q2 = netlist.get_flowrate_at_resistor(
             X,
             curr_netlist.element_values[10],
@@ -47,11 +53,13 @@ def create_time_step(
             optim_nodes[3, 1],
         )
         # p1 = X[optim_nodes[0, 0] - 1, 0]
-
+        # jax.debug.print("optim nodes {}", optim_nodes)
         # we are tracking pressure at the inlet of the idealized bifurcation
         p1 = X[0, 0]
         p2 = X[optim_nodes[3, 0] - 1, 0]
-
+        p3 = X[optim_nodes[0, 0] - 1, 0]
+        q1 = X[-2, 0]
+        q2 = X[-1, 0]
         # jax.debug.print(
         #     "printing out element values {}",
         #     curr_netlist.element_values[optim_element_idx],
@@ -65,7 +73,7 @@ def create_time_step(
         # jax.debug.print("{} {}", q1 + q2, curr_Qin)
 
         # jax.debug.print("qq shape {} {}", p1, optim_nodes[0, 0])
-        tracked_data = jnp.array([p1, p2, q1[0], q2[0]])
+        tracked_data = jnp.array([p1, p2, p3, q1, q2])
         # for plotting, not required in actual solver
         return (
             updated_netlist,
@@ -136,24 +144,50 @@ def create_compute_loss(size, n_nodes, T, np_1, dt, optim_idx):
         )
 
         tracked_data = cardiac_simulation()
-        p1_avg = jnp.mean(tracked_data[:, 0]) * 0.00075
+        t_cycle = dt * (tracked_data.shape[0] - 1)
+        p1_avg = jnp.trapezoid(tracked_data[:, 0], dx=dt) * 0.00075 / t_cycle
+        p2_avg = jnp.trapezoid(tracked_data[:, 1], dx=dt) * 0.00075 / t_cycle
+        p3_avg = jnp.trapezoid(tracked_data[:, 2], dx=dt) * 0.00075 / t_cycle
+        p1_avg_mean = jnp.mean(tracked_data[:, 0]) * 0.00075
+        # jax.debug.print("p1_avg {} {} ", p1_avg, p1_avg_mean)
         p1_max = jnp.max(tracked_data[:, 0]) * 0.00075
         p1_min = jnp.min(tracked_data[:, 0]) * 0.00075
-        # jax.debug.print("p1_avg {}", p1_avg)
-        q1_avg = jnp.mean(tracked_data[:, 1])
 
-        q2_avg = jnp.mean(tracked_data[:, 2])
-        target_systolic = 126.0211
-        target_diastolic = 72.04
-        target_mean = 94.27
-        lagrangian_multiplier = 0.2
+        # p2_avg = jnp.mean(tracked_data[:, 1]) * 0.00075
+        p2_max = jnp.max(tracked_data[:, 1]) * 0.00075
+        # p2_min = jnp.min(tracked_data[:, 1]) * 0.00075
+        p3_max = jnp.max(tracked_data[:, 2]) * 0.00075
+        # jax.debug.print("p1_avg {}", p1_avg)
+
+        q1_avg = jnp.trapezoid(tracked_data[:, 3], dx=dt) / t_cycle
+        q2_avg = jnp.trapezoid(tracked_data[:, 4], dx=dt) / t_cycle
+
+        target_systolic = 120.0
+        target_diastolic = 80.0
+        target_mean = 90.0
+
+        # q1 = (tracked_data[:, 2:3] - tracked_data[:, 3:4]) / params_in_phys_space[0]
+        # q2 = (tracked_data[:, 4:5] - tracked_data[:, 5:6]) / params_in_phys_space[3]
+        # q1_avg = jnp.mean(q1)
+        # q2_avg = jnp.mean(q2)
+
+        # target_systolic_outlet = 122.0
+        # target_diastolic_outlet = 74.0
+        # target_mean_outlet = 92.0
+
+        lagrangian_multiplier = 1
         p1_loss = jnp.mean((p1_avg - target_mean) ** 2)
         p1_sys = jnp.mean((p1_max - target_systolic) ** 2)
         p1_dia = jnp.mean((p1_min - target_diastolic) ** 2)
-        q_loss = jnp.mean((q1_avg - q2_avg) ** 2) * lagrangian_multiplier
-        # jax.debug.print("p1_loss {} q_loss {}", p1_loss, q_loss)
-        loss = p1_loss + q_loss + p1_sys + p1_dia
-        # loss = p1_loss + p2_loss
+
+        # p2_loss = jnp.mean((p2_avg - target_mean_outlet) ** 2)
+        # p2_sys = jnp.mean((p2_max - target_systolic_outlet) ** 2)
+        # p2_dia = jnp.mean((p2_min - target_diastolic_outlet) ** 2)
+        # q_loss = jnp.mean((q1_avg - 0.5 * q2_avg) ** 2) * lagrangian_multiplier
+        p_outlet_loss = jnp.mean((p2_max - 0.98 * p3_max) ** 2)
+        jax.debug.print("printing out flowrates {} {}", q1_avg, q2_avg)
+
+        loss = p1_loss + p1_sys + p1_dia + p_outlet_loss
         return loss
 
     return compute_loss
