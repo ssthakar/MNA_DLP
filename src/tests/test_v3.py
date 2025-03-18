@@ -12,6 +12,7 @@ jax.config.update("jax_enable_x64", True)
 # paths to data
 current_dir = os.path.dirname(os.path.abspath(__file__))
 data_file_path = os.path.join(current_dir, "data", "elements_v1.json")
+junction_data_path = os.path.join(current_dir, "data", "junctions_v1.json")
 all_files_path = os.path.join(current_dir, "data", "all_files")
 output_path = "./output"
 
@@ -25,13 +26,18 @@ print(inductor_indices_test)
 
 
 # NOTE: until helper function, set manually
-vessel_ids = jnp.array([1, 3, 6], int)
+# WARNING: vessel_ids have changed after reorg of netlist for R-L coupling
+vessel_ids = jnp.array([1, 3, 5], int)
 cumsum_array = jnp.array([[0], [20], [40], [60]], int)
 acl_data_path = os.path.join(all_files_path, "area_curv_length.dat")
 aorta_flow_data_path = os.path.join(all_files_path, "aorta-flow.dat")
 vessel_features = netlist.create_vessel_features(
     acl_data_path, vessel_ids, cumsum_array, test_netlist
 )
+
+
+# NOTE: vessel ides have changed after reorg of netlist for R-L coupling
+junction_featues = netlist.create_junction_features(junction_data_path)
 resistor_nodes = test_netlist.nodes[vessel_ids]  # will need this for flow rate
 
 # sizing
@@ -89,13 +95,24 @@ for c in range(0, int(np1 * T / dt) + 1):
     )
 
     # Use the assemble_matrices_non_linear function which integrates fixed point iteration
-    G_curr, b_curr = netlist.assemble_matrices(
-        curr_netlist, size, inductor_indices_test, flowrate_indices_test, dt, X_1, X_2
+    G_curr, b_curr, updated_netlist = netlist.assemble_matrices_with_non_linear_solve(
+        curr_netlist,
+        vessel_features,
+        junction_featues,
+        size,
+        inductor_indices_test,
+        flowrate_indices_test,
+        dt,
+        X_1,
+        X_2,
     )
+    if c == 122:
+        pass
+        # break
     np.savetxt(output_path + "/G_curr.dat", G_curr, fmt="%.4f")
     # Solve the system with the assembled matrices
     X = jnp.linalg.solve(G_curr, b_curr)
-
+    # print(f"inductor currents {X[-3:, 0]}")
     end_time = time.time()
     print(f" \n\nIteration {c}: {end_time - start_time} seconds\n\n")
 
@@ -105,19 +122,14 @@ for c in range(0, int(np1 * T / dt) + 1):
     X_2 = X_1
     X_1 = X
 
+    prev_netlist = updated_netlist
     prev_netlist = curr_netlist
-    # Pin[c, 0] = X[0, 0]
-    P1 = X[4, 0]
-    P2 = X[6, 0]
-    Q1 = P1 / 681.0
-    Q2 = P2 / 681.0
-    Qi = Qin[c, 0]
-    Pin[c, 0] = Q1 + Q2 - Qi
+    Pin[c, 0] = X[0, 0]
 
 
 # Plot and save results
 plt.figure(figsize=(10, 6))
-plt.plot(Pin)
+plt.plot(Pin[-111:, 0] * 0.00075, label="Pressure at inlet")
 plt.title("Pressure at Node 1 over Time")
 plt.xlabel("Time Steps")
 plt.ylabel("Pressure")
@@ -125,6 +137,6 @@ plt.grid(True)
 plt.show()
 
 # Save results
-np.savetxt(output_path + "/Pin_transient_non_linear_1e-2.dat", Pin)
-np.savetxt(output_path + "/G_test_1.dat", G_test, fmt="%.4f")
-np.savetxt(output_path + "/b_test_1.dat", b_test, fmt="%.4f")
+np.savetxt(output_path + "/Pin_transient_non_linear_1e-3.dat", Pin)
+# np.savetxt(output_path + "/G_test_1.dat", G_test, fmt="%.4f")
+# np.savetxt(output_path + "/b_test_1.dat", b_test, fmt="%.4f")

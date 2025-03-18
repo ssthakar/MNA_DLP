@@ -1,6 +1,6 @@
 import os
 import jax
-import src.model.netlist_v7 as netlist
+import src.model.netlist_v8 as netlist
 import src.solver.sim_v4 as sim
 from src.utils.fft import fft_data
 import time
@@ -107,10 +107,11 @@ simulation = sim.create_cardiac_simulation(
 total_start_time = time.time()
 
 tracked_data = simulation()
+# breakpoint()
 np.savetxt(output_path + "/tracked_3.dat", tracked_data, fmt="%.4f")
 cycle_data_p1_list = []
 loss_fn = sim.create_compute_loss(size, n_nodes, T, np1, dt, optim_ids)
-for i in range(8000):
+for i in range(1000):
     # print()
     start_time = time.time()
     # loss = sim.compute_loss(
@@ -171,7 +172,7 @@ print("outlet pressure vals")
 print(f"mean pressure: {Pout_scaled.mean()}")
 print(f"systolic pressure: {Pout_scaled.max()}")
 print(f"diastolic pressure: {Pout_scaled.min()}")
-
+np.savetxt(output_path + "/Pin_3.dat", Pin, fmt="%.4f")
 plt.figure(figsize=(10, 6))
 plt.title("Pressure over Time")
 plt.xlabel("Time Steps")
