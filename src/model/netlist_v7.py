@@ -176,7 +176,7 @@ def reorganize_elements(base_elements: List[Dict]) -> List[Dict]:
 def create_netlist(file_path: str) -> Netlist:
     type_map = element_type_map
     base_elements = read_base_elements(file_path)
-    base_elements = reorganize_elements(base_elements)
+    # base_elements = reorganize_elements(base_elements)
     elements = jnp.array([type_map[e["type"]] for e in base_elements])
     element_values = jnp.array([e["value"] for e in base_elements])
     nodes = jnp.array([[e["node1"], e["node2"]] for e in base_elements], int)
@@ -455,7 +455,6 @@ def junction_loss_update(
             q = get_flowrate_at_resistor(
                 X, netlist_acc.element_values[r_id], node1, node2
             )
-            jax.debug.print("elemmen_values: {}", netlist_acc.element_values[r_id])
             flowrates, _ = carry
             new_flowrates = flowrates.at[branch_idx].set(q[0])
             return (new_flowrates, None), None
@@ -471,76 +470,37 @@ def junction_loss_update(
         junction_angles = jnp.deg2rad(junction_angles)
         junction_flowrates = (junction_flowrates).reshape(3, 1)
         junction_velocities = junction_flowrates / junction_areas
-        jax.debug.print("junction velocities before: {}", junction_velocities)
         junction_velocities = junction_velocities.at[1:, 0].set(
             -junction_velocities[1:, 0]
         )
 
-        jax.debug.print("junction velocities after: {}", junction_velocities)
-        jax.debug.print(
-            "\njunction velocities: {},\njunction_areas: {},\njunction angles: {}\n",
-            junction_velocities,
-            junction_flowrates,
-            junction_angles,
-        )
-        Ucom, K = junction_loss_coefficient(
-            junction_velocities, junction_areas, junction_angles
-        )
-        jax.debug.print("junction loss coefficient: {}, {}", Ucom, K)
-
-        base_resistances = netlist_acc.element_values[r_ids]
-        new_resistances = base_resistances * (1.0)
-        netlist_acc = update_element_values(netlist_acc, r_ids, new_resistances)
-
-        return netlist_acc, None
-
-    num_junctions = junction_features.junction_resistor_ids.shape[0]
-    updated_netlist, _ = jax.lax.scan(
-        process_junction, netlist, jnp.arange(num_junctions)
-    )
-
-    return updated_netlist
-
-
-@jax.jit
-def junction_loss_update_old(
-    junction_features: JunctionFeatures,
-    netlist: Netlist,
-    X: jnp.ndarray,
-):
-    def process_junction(netlist_acc, j_idx):
-        r_ids = junction_features.junction_resistor_ids[j_idx]
-
-        def get_branch_velocity(branch_idx):
-            r_id = r_ids[branch_idx]
-            jax.debug.print("branch id: {}", branch_idx)
-            jax.debug.print("resistor id: {}", r_ids)
-            jax.debug.print("resistor id: {}", r_id)
-            node1 = netlist_acc.nodes[r_id, 0]
-            node2 = netlist_acc.nodes[r_id, 1]
-            q = get_flowrate_at_resistor(
-                X, netlist_acc.element_values[r_id], node1, node2
-            )
-            jax.debug.print("node1: {}, node2: {}", node1, node2)
-            # jax.debug.print("flowrate: {}", q)
-            return q[0]
-
-        velocities = jax.vmap(get_branch_velocity)(jnp.arange(3))
-        junction_velocities = velocities.reshape(-1, 1)
-
-        junction_areas = junction_features.junction_areas[j_idx].reshape(-1, 1)
-        junction_angles = junction_features.junction_angles[j_idx].reshape(-1, 1)
-
-        Ucom, K = junction_loss_coefficient(
-            junction_velocities, junction_areas, junction_angles
-        )
-
         # jax.debug.print(
-        # "velocities: {}, {}", junction_velocities.shape, junction_velocities
+        #     "\njunction velocities: {},\njunction_areas: {},\njunction angles: {}\n",
+        #     junction_velocities,
+        #     junction_flowrates,
+        #     junction_angles,
         # )
+        Ucom, K = junction_loss_coefficient(
+            junction_velocities, junction_areas, junction_angles
+        )
+        Ucom = Ucom[0, 0]
+        # jax.debug.print("junction loss coefficient: {}, {}", Ucom, K)
+        K_vals = jnp.array([0.0, K[0, 0], K[1, 0]]).reshape(3, 1)
+        # jax.debug.print("K_vals: {}", K_vals)
         base_resistances = netlist_acc.element_values[r_ids]
-        new_resistances = base_resistances * (1.0)
+        bif_dis = (
+            0.5
+            * RHO
+            * Ucom**2
+            * K_vals
+            / (junction_flowrates + jnp.full_like(junction_flowrates, SMALL_NUMBER))
+        ).reshape(
+            3,
+        )
+        # jax.debug.print("bif_dis: {}", base_resistances.shape)
+        new_resistances = base_resistances * (1.0 + bif_dis)
         netlist_acc = update_element_values(netlist_acc, r_ids, new_resistances)
+
         return netlist_acc, None
 
     num_junctions = junction_features.junction_resistor_ids.shape[0]
@@ -838,10 +798,7 @@ def fixed_point_non_linear_solve(
             X_1,
             X_2,
         )
-        jax.debug.print(
-            "printing out vessel resistances: {}",
-            netlist_curr.element_values[junction_features.junction_resistor_ids],
-        )
+
         X_next = jnp.linalg.solve(G, b)
         netlist_updated = modification_factor_update(
             vessel_features, netlist_curr, X_next
@@ -964,7 +921,7 @@ def junction_loss_coefficient(U: jnp.ndarray, A: jnp.ndarray, theta: jnp.ndarray
             None,
         )
 
-        return Ucom.reshape(1, 1), K
+        return Ucom.reshape(1, 1) * 0, K * 0
 
     def diverging_flow(
         U: jnp.ndarray,
@@ -972,7 +929,6 @@ def junction_loss_coefficient(U: jnp.ndarray, A: jnp.ndarray, theta: jnp.ndarray
         theta: jnp.ndarray,
         Q: jnp.ndarray,
     ):
-        jax.debug.print("U: {} \n A: {} \n theta: {} \n Q: {}", U, A, theta, Q)
         Q_si = Q[0:1,]
         Q_ci = Q[1:3,]
         U_si = U[0:1,]
@@ -1037,9 +993,9 @@ def junction_loss_coefficient(U: jnp.ndarray, A: jnp.ndarray, theta: jnp.ndarray
     Si = Q >= 0.0
     is_zero_flow = jnp.all(jnp.abs(Q) < 1e-7)
     is_converging = jnp.sum(Si) > 1
-    jax.debug.print(
-        "is_converging: {} \n is_zero_flow: {}", is_converging, is_zero_flow
-    )
+    # jax.debug.print(
+    #     "is_converging: {} \n is_zero_flow: {}", is_converging, is_zero_flow
+    # )
     return jax.lax.cond(
         is_zero_flow,
         lambda: zero_flow_case(U, A, theta),
@@ -1067,91 +1023,3 @@ def wrapTo2pi(theta: jnp.ndarray):
     xwrap = jnp.where(mask, xwrap - correction, xwrap)
     theta = xwrap
     return theta
-
-
-@jax.jit
-def junction_loss_coefficient_(U, A, theta):
-    Q = U * A
-
-    Ci = Q < 0.0
-    Si = Q >= 0.0
-
-    Qtot = jnp.sum(jnp.where(Si, Q, 0.0))
-    FlowRatio = jnp.where(Ci, -Q / Qtot, 0.0)
-
-    collector_angles = jnp.where(Ci, theta, 0.0)
-    PseudoColAngle = jnp.mean(collector_angles)
-
-    sin_theta_Si = jnp.where(Si, jnp.sin(theta), 0.0)
-    cos_theta_Si = jnp.where(Si, jnp.cos(theta), 0.0)
-    Q_Si = jnp.where(Si, Q, 0.0)
-
-    sin_sum = jnp.sum(sin_theta_Si * Q_Si)
-    cos_sum = jnp.sum(cos_theta_Si * Q_Si)
-    PseudoSupAngle = jnp.arctan2(sin_sum, cos_sum)
-
-    angle_diff = jnp.abs(PseudoSupAngle - PseudoColAngle)
-    PseudoColAngle = jnp.where(
-        angle_diff < jnp.pi / 2, PseudoColAngle + jnp.pi, PseudoColAngle
-    )
-
-    theta_adjusted = theta - PseudoColAngle
-    theta_adjusted = (theta_adjusted + jnp.pi) % (2 * jnp.pi) - jnp.pi
-
-    pseudo_direction_sum = jnp.sum(jnp.where(Si, jnp.sin(theta_adjusted) * Q, 0.0))
-    pseudodirection = jnp.sign(pseudo_direction_sum)
-
-    theta_adjusted = jnp.where(pseudodirection < 0, -theta_adjusted, theta_adjusted)
-
-    sin_abs_theta = jnp.where(Si, jnp.sin(jnp.abs(theta_adjusted)) * Q, 0.0)
-    cos_abs_theta = jnp.where(Si, jnp.cos(jnp.abs(theta_adjusted)) * Q, 0.0)
-    PseudoSupAngle = jnp.arctan2(jnp.sum(sin_abs_theta), jnp.sum(cos_abs_theta))
-
-    sign_theta_Ci = jnp.where(Ci, jnp.sign(theta_adjusted), 0.0)
-    etransferfactor = jnp.where(
-        Ci,
-        (0.8 * (jnp.pi - PseudoSupAngle) * sign_theta_Ci - 0.2) * (1.0 - FlowRatio),
-        0.0,
-    )
-
-    U_Si = jnp.where(Si, U, 0.0)
-    Q_Si = jnp.where(Si, Q, 0.0)
-    velocity_numerator = jnp.sum(U_Si * Q_Si) / jnp.maximum(Qtot, 1e-10)
-    TotPseudoArea = Qtot / jnp.maximum(
-        (1.0 - etransferfactor) * velocity_numerator, 1e-10
-    )
-
-    A_Ci = jnp.where(Ci, A, 1.0)
-    AreaRatio = jnp.where(Ci, TotPseudoArea / A_Ci, 0.0)
-
-    phi = jnp.where(Ci, PseudoSupAngle - theta_adjusted, 0.0)
-    phi = phi % (2.0 * jnp.pi)
-
-    exp_factor = jnp.where(Ci, 1.0 - jnp.exp(-FlowRatio / 0.02), 0.0)
-    cos_term = jnp.where(Ci, jnp.cos(0.75 * (jnp.pi - phi)), 0.0)
-    area_flow_term = jnp.where(Ci, 1.0 / jnp.maximum(AreaRatio * FlowRatio, 1e-10), 0.0)
-    C = jnp.where(Ci, exp_factor * (1.0 - area_flow_term * cos_term), 0.0)
-
-    K = jnp.zeros_like(U)
-
-    U_squared = U * U
-
-    is_converging = jnp.sum(Ci) == 1
-
-    Ucom_array = jnp.where(is_converging, jnp.where(Ci, U, 0.0), jnp.where(Si, U, 0.0))
-
-    Ucom = jnp.sum(Ucom_array)
-    Ucom_squared = Ucom * Ucom
-
-    U_ratio_squared = jnp.where(Ci, U_squared / jnp.maximum(Ucom_squared, 1e-10), 0.0)
-
-    U_Si_squared_sum = jnp.sum(jnp.where(Si, U_squared, 0.0))
-    U_Si_to_Ci_ratio = jnp.where(
-        Ci, U_Si_squared_sum / jnp.maximum(U_squared, 1e-10), 0.0
-    )
-
-    K = jnp.where(Ci, U_ratio_squared * (2.0 * C + U_Si_to_Ci_ratio - 1.0), 0.0)
-
-    K = jnp.where(U.size <= 3, K, 0.0)
-
-    return C, K

@@ -40,8 +40,10 @@ def create_time_step(
         X = jnp.linalg.solve(G_curr, b_curr)
         new_X1 = X
         new_X2 = X_1
-
-        tracked_data = jnp.array(X[:, 0])
+        p_in = X[0, 0]
+        q1 = X[-1, 0]
+        q2 = X[-2, 0]
+        tracked_data = jnp.array([p_in, q1, q2], float)
         # jax.debug.print("printing out tracked data {}", tracked_data)
         return (
             updated_netlist,
@@ -60,7 +62,7 @@ def create_time_step(
 def create_cardiac_simulation(init_carry, Qin, size, n_nodes, T, np1, dt, optim_idx):
     @jax.jit
     def cardiac_simulation():
-        max_steps = int(np1 * T / dt)
+        max_steps = int(np1 * T / 0.01)
         n_points_last_cycle = max_steps // np1 + 1
         time_step = create_time_step(size)
         _, tracked_data = jax.lax.scan(time_step, init_carry, Qin)
@@ -89,10 +91,20 @@ def create_compute_loss(size, n_nodes, T, np_1, dt, optim_idx):
     @jax.jit
     def compute_loss(params, target, init_carry, Qin):
         params = jnp.array(params, dtype=jnp.float32)
-        # hard coded for now, but will create functions to make this more general
-        param_scales = jnp.array([100, 10000, 0.0001, 100, 10000, 0.0001], float)
+        param_scales = jnp.array([100, 0.0001, 10000, 100, 0.0001, 10000], float)
         params_in_phys_space = transform_to_phys_space(params, param_scales)
-        curr_netlist, X_1, X_2, vessel_features, dt = init_carry
+        (
+            curr_netlist,
+            X_1,
+            X_2,
+            vessel_features,
+            junction_features,
+            inductor_indices,
+            flowrate_query_indices,
+            dt,
+        ) = init_carry
+
+        # apply the parameters to the netlist
         netlist_with_params = netlist.update_element_values(
             curr_netlist, optim_idx, params_in_phys_space
         )
@@ -100,7 +112,16 @@ def create_compute_loss(size, n_nodes, T, np_1, dt, optim_idx):
         # jax.debug.print(
         #     "printing out optim values {}", netlist_with_params.element_values[11]
         # )
-        updated_carry = (netlist_with_params, X_1, X_2, vessel_features, dt)
+        updated_carry = (
+            netlist_with_params,
+            X_1,
+            X_2,
+            vessel_features,
+            junction_features,
+            inductor_indices,
+            flowrate_query_indices,
+            dt,
+        )
 
         cardiac_simulation = create_cardiac_simulation(
             updated_carry,
@@ -114,6 +135,7 @@ def create_compute_loss(size, n_nodes, T, np_1, dt, optim_idx):
         )
 
         tracked_data = cardiac_simulation()
+        # jax.debug.print("tracked data {}", tracked_data)
         p1_avg = jnp.mean(tracked_data[:, 0]) * 0.00075
         p1_max = jnp.max(tracked_data[:, 0]) * 0.00075
         p1_min = jnp.min(tracked_data[:, 0]) * 0.00075

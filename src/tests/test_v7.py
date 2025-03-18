@@ -29,7 +29,7 @@ flowrate_query_indices = netlist.create_flowrate_query_indices(inductor_indices)
 # Create netlist
 
 # NOTE: until helper function, set manually
-vessel_ids = jnp.array([1, 3, 5], int)
+vessel_ids = jnp.array([1, 3, 6], int)
 cumsum_array = jnp.array([[0], [20], [40], [60]], int)
 acl_data_path = os.path.join(all_files_path, "area_curv_length.dat")
 aorta_flow_data_path = os.path.join(all_files_path, "aorta-flow.dat")
@@ -81,13 +81,13 @@ np.savetxt(output_path + "/G_test_1.dat", G_test, fmt="%.4f")
 
 target = jnp.array([125584.0, 125584.0])  # Example target value
 
-optimizer = optax.adam(learning_rate=0.1)
-params_in_phys_space = jnp.array([600, 29000, 0.0005, 600, 29000, 0.0005], float)
+optimizer = optax.adam(learning_rate=0.01)
+params_in_phys_space = jnp.array([600, 0.0005, 29000, 600, 0.0005, 29000], float)
 
-param_scale = jnp.array([100, 10000, 0.0001, 100, 10000, 0.0001], float)
+param_scale = jnp.array([100, 0.0001, 10000, 100, 0.0001, 10000], float)
 params = params_in_phys_space / param_scale
 
-optim_ids = jnp.array([5, 9, 11, 8, 10, 12], int)
+optim_ids = jnp.array([5, 9, 10, 8, 11, 12], int)
 opt_state = optimizer.init(params)
 time_step = sim.create_time_step(size)
 
@@ -112,7 +112,7 @@ print("done")
 np.savetxt(output_path + "/last_cycle_unoptimized.dat", tracked_data, fmt="%.4f")
 cycle_data_p1_list = []
 loss_fn = sim.create_compute_loss(size, n_nodes, T, np1, dt, optim_ids)
-for i in range(0):
+for i in range(100):
     start_time = time.time()
     loss, grads = jax.value_and_grad(loss_fn)(params, target, init_carry, Qin)
     updates, opt_state = optimizer.update(grads, opt_state, params)
@@ -123,7 +123,7 @@ for i in range(0):
     # print(
     #     f"Loss: {loss}, grads:{grads}, Time: {end_time - start_time},params: {params * param_scale}"
     # )
-    if i % 10 == 0:
+    if i % 1 == 0:
         print(
             f"Iteration : {i}, Loss: {loss:.3f}, grads: {[f'{g:.3f}' for g in grads]}, Time: {end_time - start_time:.3f}, params: {[f'{p:.6f}' for p in (params * param_scale)]}"
         )
