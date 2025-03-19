@@ -16,7 +16,7 @@ jax.config.update("jax_enable_x64", True)
 current_dir = os.path.dirname(os.path.abspath(__file__))
 data_file_path = os.path.join(current_dir, "data", "elements_v1.json")
 all_files_path = os.path.join(current_dir, "data", "all_files")
-output_path = "./output"
+output_path = "./"
 junction_data_path = os.path.join(current_dir, "data", "junctions_v1.json")
 
 # NOTE: this can be a function as well
@@ -57,8 +57,8 @@ X_2 = X_1
 
 # time controls
 T = 1.1
-np1 = int(10)
-dt = 0.01
+np1 = int(20)
+dt = 0.001
 
 
 # NOTE: this can be a function for any general waveform
@@ -108,11 +108,11 @@ simulation = sim.create_cardiac_simulation(
 total_start_time = time.time()
 
 tracked_data = simulation()
+np.savetxt(output_path + "tracked_data_new.dat", tracked_data, fmt="%.4f")
 print("done")
-np.savetxt(output_path + "/last_cycle_unoptimized.dat", tracked_data, fmt="%.4f")
 cycle_data_p1_list = []
 loss_fn = sim.create_compute_loss(size, n_nodes, T, np1, dt, optim_ids)
-for i in range(100):
+for i in range(0):
     start_time = time.time()
     loss, grads = jax.value_and_grad(loss_fn)(params, target, init_carry, Qin)
     updates, opt_state = optimizer.update(grads, opt_state, params)

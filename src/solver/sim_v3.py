@@ -41,9 +41,11 @@ def create_time_step(
         new_X1 = X
         new_X2 = X_1
         p_in = X[0, 0]
+        p1 = X[4, 0]
+        p2 = X[7, 0]
         q1 = X[-1, 0]
         q2 = X[-2, 0]
-        tracked_data = jnp.array([p_in, q1, q2], float)
+        tracked_data = jnp.array([p_in, p1, p2, q1, q2], float)
         # jax.debug.print("printing out tracked data {}", tracked_data)
         return (
             updated_netlist,
@@ -62,7 +64,7 @@ def create_time_step(
 def create_cardiac_simulation(init_carry, Qin, size, n_nodes, T, np1, dt, optim_idx):
     @jax.jit
     def cardiac_simulation():
-        max_steps = int(np1 * T / 0.01)
+        max_steps = int(np1 * T / 0.001)
         n_points_last_cycle = max_steps // np1 + 1
         time_step = create_time_step(size)
         _, tracked_data = jax.lax.scan(time_step, init_carry, Qin)
@@ -140,9 +142,9 @@ def create_compute_loss(size, n_nodes, T, np_1, dt, optim_idx):
         p1_max = jnp.max(tracked_data[:, 0]) * 0.00075
         p1_min = jnp.min(tracked_data[:, 0]) * 0.00075
         # jax.debug.print("p1_avg {}", p1_avg)
-        q1_avg = jnp.mean(tracked_data[:, 1])
+        q1_avg = jnp.mean(tracked_data[:, 3])
 
-        q2_avg = jnp.mean(tracked_data[:, 2])
+        q2_avg = jnp.mean(tracked_data[:, 4])
         target_systolic = 126.0211
         target_diastolic = 72.04
         target_mean = 94.27

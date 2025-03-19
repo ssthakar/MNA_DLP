@@ -19,7 +19,7 @@ element_type_map = {
 
 MU = 0.04
 RHO = 1.06
-LARGE_NUMBER = 1e6
+LARGE_NUMBER = 1e3
 SMALL_NUMBER = 1e-10
 
 # file paths
@@ -29,6 +29,7 @@ output_path = "./output/"
 class Netlist(NamedTuple):
     elements: jnp.ndarray
     element_values: jnp.ndarray
+    element_c2_values: jnp.ndarray
     nodes: jnp.ndarray
     n_nodes: int
     n_psources: int
@@ -179,6 +180,7 @@ def create_netlist(file_path: str) -> Netlist:
     # base_elements = reorganize_elements(base_elements)
     elements = jnp.array([type_map[e["type"]] for e in base_elements])
     element_values = jnp.array([e["value"] for e in base_elements])
+    element_c2_values = jnp.array([e["c2_value"] for e in base_elements])
     nodes = jnp.array([[e["node1"], e["node2"]] for e in base_elements], int)
 
     if DEBUG:
@@ -197,6 +199,7 @@ def create_netlist(file_path: str) -> Netlist:
     return Netlist(
         elements=elements,
         element_values=element_values,
+        element_c2_values=element_c2_values,
         nodes=nodes,
         n_nodes=n_nodes,
         n_psources=n_psources,
@@ -213,6 +216,7 @@ def update_element_values(
     return Netlist(
         elements=netlist.elements,
         element_values=updated_values,
+        element_c2_values=netlist.element_c2_values,
         nodes=netlist.nodes,
         n_nodes=netlist.n_nodes,
         n_psources=netlist.n_psources,
@@ -280,11 +284,13 @@ def linearized_resistor_stamp(
     q_prev = q_prev_at_node
     Rb = value
 
-    R_eq = Rb + 2 * S * q_prev
-    P_eq = -S * q_prev**2
+    R_eq = Rb + 2 * S * jnp.abs(q_prev)
+    P_eq = -S * q_prev**2 * 0
     conductance = 1.0 / R_eq
+    # jax.debug.print("conductance: {}, P_eq: {}", conductance, 1 / R_eq)
 
     def update_G_normal(G):
+        # jax.debug.print("printing out S value: {}", S)
         G = G.at[node1 - 1, node1 - 1].add(conductance)
         G = G.at[node1 - 1, node2 - 1].add(-conductance)
         G = G.at[node2 - 1, node1 - 1].add(-conductance)
@@ -701,9 +707,14 @@ def assemble_matrices(
     q_prev = q_prev.at[jnp.arange(q_prev.shape[0])].set(
         jnp.where(mask, X_1[safe_indices, 0], q_prev)
     )
-
-    S_array = jnp.zeros_like(q_prev)
-    S_array = jnp.where(q_prev != -LARGE_NUMBER, 0.001, S_array)
+    # jax.debug.print(
+    #     "printing out C2 array details {} {} {}",
+    #     netlist.element_c2_values,
+    #     netlist.element_c2_values.shape,
+    #     q_prev.shape,
+    # )
+    S_array = jnp.array(netlist.element_c2_values)
+    # S_array = jnp.full_like(q_prev, 0.001)
 
     jax.lax.cond(
         DEBUG,
@@ -788,7 +799,6 @@ def fixed_point_non_linear_solve(
 ):
     def scan_fn(carry, _):
         _, netlist_curr = carry
-        netlist_curr = junction_loss_update(junction_features, netlist_curr, X_1)
         G, b = assemble_matrices(
             netlist_curr,
             size,
@@ -800,10 +810,11 @@ def fixed_point_non_linear_solve(
         )
 
         X_next = jnp.linalg.solve(G, b)
-        netlist_updated = modification_factor_update(
-            vessel_features, netlist_curr, X_next
+        netlist_updated = junction_loss_update(junction_features, netlist_curr, X_next)
+        netlist_to_return = modification_factor_update(
+            vessel_features, netlist_updated, X_next
         )
-        return (X_next, netlist_updated), None
+        return (X_next, netlist_to_return), None
 
     init_carry = (X_1, netlist)
 
