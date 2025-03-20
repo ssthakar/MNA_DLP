@@ -9,14 +9,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 import optax
 
-
 jax.config.update("jax_enable_x64", True)
+jax.config.update("jax_platform_name", "cpu")
 
+# FLAGS
+RUN_SIM = True
+RUN_OPTIM = True
+start_time_total = time.time()
 # paths to data
 current_dir = os.path.dirname(os.path.abspath(__file__))
 data_file_path = os.path.join(current_dir, "data", "elements_v1.json")
 all_files_path = os.path.join(current_dir, "data", "all_files")
-output_path = "./"
+output_path = "./output/"
 junction_data_path = os.path.join(current_dir, "data", "junctions_v1.json")
 
 # NOTE: this can be a function as well
@@ -57,8 +61,8 @@ X_2 = X_1
 
 # time controls
 T = 1.1
-np1 = int(20)
-dt = 0.001
+np1 = int(15)
+dt = 0.01
 
 
 # NOTE: this can be a function for any general waveform
@@ -81,7 +85,7 @@ np.savetxt(output_path + "/G_test_1.dat", G_test, fmt="%.4f")
 
 target = jnp.array([125584.0, 125584.0])  # Example target value
 
-optimizer = optax.adam(learning_rate=0.01)
+optimizer = optax.adam(learning_rate=0.1)
 params_in_phys_space = jnp.array([600, 0.0005, 29000, 600, 0.0005, 29000], float)
 
 param_scale = jnp.array([100, 0.0001, 10000, 100, 0.0001, 10000], float)
@@ -102,68 +106,106 @@ init_carry = (
     dt,
 )
 
-simulation = sim.create_cardiac_simulation(
-    init_carry, Qin, size, n_nodes, T, np1, dt, optim_ids
+
+if RUN_SIM:
+    sim_start_time = time.time()
+    simulation = sim.create_cardiac_simulation(
+        init_carry, Qin, size, n_nodes, T, np1, dt, optim_ids
+    )
+    tracked_data = simulation()
+    jax.block_until_ready(tracked_data)
+    sim_end_time = time.time()
+    sim_time = sim_end_time - sim_start_time
+    np.savetxt(output_path + "tracked_data_init_sim.dat", tracked_data, fmt="%.4f")
+    print(f"Initial Simulation completed in {sim_time:.3f} seconds.\n")
+
+
+# create simulation function object with initial parameters
+sim_with_initial_params = sim.create_cardiac_simulation_with_params(
+    params_in_phys_space, init_carry, Qin, size, n_nodes, T, np1, dt, optim_ids
 )
-total_start_time = time.time()
+tracked_data_with_initial_params = sim_with_initial_params()
 
-tracked_data = simulation()
-np.savetxt(output_path + "tracked_data_new.dat", tracked_data, fmt="%.4f")
-print("done")
-cycle_data_p1_list = []
-loss_fn = sim.create_compute_loss(size, n_nodes, T, np1, dt, optim_ids)
-for i in range(0):
+
+max_optim_iter = 10000
+print_per_iter = 10
+simulate_per_iter = 50
+
+if RUN_OPTIM:
+    i = 0
+    loss = netlist.LARGE_NUMBER
     start_time = time.time()
-    loss, grads = jax.value_and_grad(loss_fn)(params, target, init_carry, Qin)
-    updates, opt_state = optimizer.update(grads, opt_state, params)
-    params = optax.apply_updates(params, updates)
-    jax.block_until_ready(loss)
-    jax.block_until_ready(grads)
-    end_time = time.time()
-    # print(
-    #     f"Loss: {loss}, grads:{grads}, Time: {end_time - start_time},params: {params * param_scale}"
-    # )
-    if i % 1 == 0:
-        print(
-            f"Iteration : {i}, Loss: {loss:.3f}, grads: {[f'{g:.3f}' for g in grads]}, Time: {end_time - start_time:.3f}, params: {[f'{p:.6f}' for p in (params * param_scale)]}"
-        )
+    loss_fn = sim.create_compute_loss(size, n_nodes, T, np1, dt, optim_ids)
+    print(f"Target Values: P_avg: {94:.3f}, P_max: {126}, P_min: {72}\n")
+    print("********** Starting optimization **********")
+    while i < max_optim_iter or loss < 1e-3:
+        loss, grads = jax.value_and_grad(loss_fn)(params, target, init_carry, Qin)
+        updates, opt_state = optimizer.update(grads, opt_state, params)
+        params = optax.apply_updates(params, updates)
+        jax.block_until_ready(loss)
+        jax.block_until_ready(grads)
+        end_time = time.time()
+
+        if i % print_per_iter == 0:
+            # start_time = time.time()
+            if i == 0:
+                print(
+                    f"itr# : {i}, Loss: {loss:.5f}, Time: {(end_time - start_time):.2f}, norm_grads: {jnp.linalg.norm(grads):.3f}, params norm: {jnp.linalg.norm(params * param_scale):.3f}"
+                )
+            else:
+                print(
+                    f"itr# : {i}, Loss: {loss:.5f}, Time: {(end_time - start_time) / print_per_iter:.2f}, norm_grads: {jnp.linalg.norm(grads):.3f}, params norm: {jnp.linalg.norm(params * param_scale):.3f}"
+                )
+
+            start_time = time.time()
+
+        if i % simulate_per_iter == 0 and i > 0 or loss < 1e-3:
+            print(f"Simulation at iter: {i}")
+            sim_start_time = time.time()
+            sim_with_current_params = sim.create_cardiac_simulation_with_params(
+                params * param_scale,
+                init_carry,
+                Qin,
+                size,
+                n_nodes,
+                T,
+                np1,
+                dt,
+                optim_ids,
+            )
+            tracked_data = sim_with_current_params()
+            jax.block_until_ready(tracked_data)
+            sim_end_time = time.time()
+            sim_time = sim_end_time - sim_start_time
+            params_in_phys_space = params * param_scale
+            np.savetxt(
+                output_path + f"params_at_iter_{i}.dat",
+                params_in_phys_space,
+                fmt="%.9f",
+            )
+            p1_avg = jnp.mean(tracked_data[:, 0]) * 0.00075
+            p1_max = jnp.max(tracked_data[:, 0]) * 0.00075
+            p1_min = jnp.min(tracked_data[:, 0]) * 0.00075
+            q1_avg = jnp.mean(tracked_data[:, 3])
+            q2_avg = jnp.mean(tracked_data[:, 4])
+            plt.figure()
+            plt.plot(tracked_data[:, 0] * 0.00075, "b-", label="P1_curr (mmHg)")
+            plt.plot(
+                tracked_data_with_initial_params[:, 0] * 0.00075,
+                "r-",
+                label="P1_init (mmHg)",
+            )
+            plt.legend()
+            plt.grid()
+            plt.savefig(output_path + f"p1_iter_{i}.png")
+            target = jnp.array([p1_avg, p1_max, p1_min, q1_avg, q2_avg])
+            np.savetxt(
+                output_path + f"tracked_data_iter_{i}_sim.dat", tracked_data, fmt="%.4f"
+            )
+            np.savetxt(output_path + f"target_iter_{i}.dat", target, fmt="%.4f")
+            print(f"P_avg: {p1_avg:.3f}, P_max: {p1_max:.3f}, P_min: {p1_min:.3f}\n")
+        i += 1
 
 
-# breakpoint()
-
-# final_carry, Pin = jax.lax.scan(time_step, init_carry, Qin)
-jax.block_until_ready(tracked_data)
-total_end_time = time.time()
-
-print(f"Total simulation time: {total_end_time - total_start_time} seconds")
-print("tracked data shape", tracked_data.shape)
-print(jnp.mean(tracked_data[:, 0:1]))
-print(jnp.mean(tracked_data[:, 1:2]))
-
-# @partial(jax.jit, static_argnums=(2, 3))
-# def run_simulation(init_carry, Qin, size, n_nodes):
-#     time_step_fn = sim.create_time_step(size, n_nodes)
-#     return jax.lax.scan(time_step_fn, init_carry, Qin)
-#
-#
-# start_time = time.time()
-# final_carry, Pin = run_simulation(init_carry, Qin, size, n_nodes)
-# jax.block_until_ready(Pin)
-# end_time = time.time()
-# print(f"Total simulation time: {end_time - start_time} seconds")
-Pin = tracked_data[:, 0:1]
-Pin_scaled = Pin * 0.00075
-print(f"systolic pressure: {Pin_scaled.max()}")
-print(f"diastolic pressure: {Pin_scaled.min()}")
-print(f"mean pressure: {Pin_scaled.mean()}")
-
-plt.figure(figsize=(10, 6))
-# plt.plot(Pin[:, 1:2] + Pin[:, 2:3], label="Pressure at inlet")
-plt.plot(tracked_data[:, 0:1] * 0.00075, label="Pressure at inlet")
-# plt.plot(Qin[-111:], label="Flow rate at inlet")
-plt.title("Pressure over Time")
-plt.xlabel("Time Steps")
-plt.ylabel("Pressure")
-plt.grid(True)
-
-plt.show()
+end_time_total = time.time()
+print(f"Total time: {end_time_total - start_time_total:.3f} seconds.")

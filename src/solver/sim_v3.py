@@ -64,10 +64,32 @@ def create_time_step(
 def create_cardiac_simulation(init_carry, Qin, size, n_nodes, T, np1, dt, optim_idx):
     @jax.jit
     def cardiac_simulation():
-        max_steps = int(np1 * T / 0.001)
+        max_steps = int(np1 * T / 0.01)
         n_points_last_cycle = max_steps // np1 + 1
         time_step = create_time_step(size)
         _, tracked_data = jax.lax.scan(time_step, init_carry, Qin)
+        # returns last cardiac cycle
+        return tracked_data[-n_points_last_cycle:, :]
+
+    return cardiac_simulation
+
+
+def create_cardiac_simulation_with_params(
+    params, init_carry, Qin, size, n_nodes, T, np1, dt, optim_idx
+):
+    """
+    creates simulation function object with updated parameters
+    """
+    old_netlist = init_carry[0]
+    netlist_with_params = netlist.update_element_values(old_netlist, optim_idx, params)
+    init_carry_with_updated_params = (netlist_with_params, *init_carry[1:])
+
+    @jax.jit
+    def cardiac_simulation():
+        max_steps = int(np1 * T / 0.01)
+        n_points_last_cycle = max_steps // np1 + 1
+        time_step = create_time_step(size)
+        _, tracked_data = jax.lax.scan(time_step, init_carry_with_updated_params, Qin)
         # returns last cardiac cycle
         return tracked_data[-n_points_last_cycle:, :]
 
@@ -148,7 +170,7 @@ def create_compute_loss(size, n_nodes, T, np_1, dt, optim_idx):
         target_systolic = 126.0211
         target_diastolic = 72.04
         target_mean = 94.27
-        lagrangian_multiplier = 0.2
+        lagrangian_multiplier = 1
         p1_loss = jnp.mean((p1_avg - target_mean) ** 2)
         p1_sys = jnp.mean((p1_max - target_systolic) ** 2)
         p1_dia = jnp.mean((p1_min - target_diastolic) ** 2)

@@ -99,7 +99,6 @@ def create_vessel_features(
         start_index = cumsum_array[i, 0]
         end_index = cumsum_array[i + 1, 0]
         area = acl_data[start_index:end_index, 0]
-        print(acl_data.shape)
         curvature = acl_data[start_index:end_index, 1]
         length = acl_data[start_index:end_index, 2]
         vessel_areas[i, : len(area)] = area
