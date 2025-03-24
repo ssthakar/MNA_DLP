@@ -56,7 +56,7 @@ X_2 = X_1
 print(X_1.shape)
 # time controls
 T = 1.1
-np1 = int(20)
+np1 = int(1)
 dt = 0.01
 
 # Boundary conditions
@@ -67,6 +67,9 @@ Qin[0 : int(T / dt + 1), 0] = Q_inll[:, 0]
 for i in range(0, np1):
     Qin[int(i * T / dt + 1) : int(i * T / dt + 1 + T / dt), 0] = Q_inll[1:, 0]
 Qin = jnp.array(Qin, float)
+# Qin = Qin + 1e-3
+plt.plot(Qin)
+plt.show()
 print(f"number of timesteps {Qin.shape}")
 Pin = np.zeros_like(Qin)
 

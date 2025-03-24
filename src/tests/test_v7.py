@@ -13,7 +13,8 @@ jax.config.update("jax_enable_x64", True)
 jax.config.update("jax_platform_name", "cpu")
 
 # FLAGS
-RUN_SIM = True
+RUN_INIT_SIM = True
+PLOT_INIT_SIM = True
 RUN_OPTIM = True
 start_time_total = time.time()
 # paths to data
@@ -74,6 +75,7 @@ Qin[0 : int(T / dt + 1), 0] = Q_inll[:, 0]
 for i in range(0, np1):
     Qin[int(i * T / dt + 1) : int(i * T / dt + 1 + T / dt), 0] = Q_inll[1:, 0]
 Qin = jnp.array(Qin, float)
+Qin = Qin + 1e-3
 Qin = Qin.flatten()
 
 # Get initial matrices
@@ -107,7 +109,7 @@ init_carry = (
 )
 
 
-if RUN_SIM:
+if RUN_INIT_SIM:
     sim_start_time = time.time()
     simulation = sim.create_cardiac_simulation(
         init_carry, Qin, size, n_nodes, T, np1, dt, optim_ids
@@ -117,6 +119,12 @@ if RUN_SIM:
     sim_end_time = time.time()
     sim_time = sim_end_time - sim_start_time
     np.savetxt(output_path + "tracked_data_init_sim.dat", tracked_data, fmt="%.4f")
+    if PLOT_INIT_SIM:
+        plt.figure()
+        plt.plot(tracked_data[:, 0] * 0.00075, "b-", label="P1 (mmHg)")
+        plt.legend()
+        plt.grid()
+        plt.show()
     print(f"Initial Simulation completed in {sim_time:.3f} seconds.\n")
 
 
@@ -125,7 +133,11 @@ sim_with_initial_params = sim.create_cardiac_simulation_with_params(
     params_in_phys_space, init_carry, Qin, size, n_nodes, T, np1, dt, optim_ids
 )
 tracked_data_with_initial_params = sim_with_initial_params()
-
+np.savetxt(
+    output_path + "tracked_data_with_initial_params.dat",
+    tracked_data_with_initial_params,
+    fmt="%.8f",
+)
 
 max_optim_iter = 10000
 print_per_iter = 10
@@ -138,7 +150,7 @@ if RUN_OPTIM:
     loss_fn = sim.create_compute_loss(size, n_nodes, T, np1, dt, optim_ids)
     print(f"Target Values: P_avg: {94:.3f}, P_max: {126}, P_min: {72}\n")
     print("********** Starting optimization **********")
-    while i < max_optim_iter or loss < 1e-3:
+    while i < max_optim_iter or loss > 1e-3:
         loss, grads = jax.value_and_grad(loss_fn)(params, target, init_carry, Qin)
         updates, opt_state = optimizer.update(grads, opt_state, params)
         params = optax.apply_updates(params, updates)
@@ -159,7 +171,7 @@ if RUN_OPTIM:
 
             start_time = time.time()
 
-        if i % simulate_per_iter == 0 and i > 0 or loss < 1e-3:
+        if i % simulate_per_iter == 0 and i > 0 and loss > 1e-3:
             print(f"Simulation at iter: {i}")
             sim_start_time = time.time()
             sim_with_current_params = sim.create_cardiac_simulation_with_params(
