@@ -1,6 +1,6 @@
 import os
 import jax
-import src.model.netlist_v7 as netlist
+import src.model.netlist_v9 as netlist
 from src.utils.fft import fft_data
 import time
 import jax.numpy as jnp
@@ -18,6 +18,8 @@ output_path = "./output"
 
 # Create netlist
 test_netlist = netlist.create_netlist(data_file_path)
+print(test_netlist)
+breakpoint()
 inductor_indices_test = netlist.create_inductor_index_mask(test_netlist)
 flowrate_indices_test = netlist.create_flowrate_query_indices(inductor_indices_test)
 print(flowrate_indices_test)
@@ -80,8 +82,8 @@ G_new, b_new = netlist.assemble_matrices(
 )
 np.savetxt(output_path + "/G_test_2.dat", G_new, fmt="%.4f")
 # breakpoint()
-Q1 = jnp.zeros_like(Pin)
-Q2 = jnp.zeros_like(Pin)
+Q1 = np.zeros_like(Pin)
+Q2 = np.zeros_like(Pin)
 
 # Define fixed point iteration parameters
 max_iter = 10
@@ -124,11 +126,18 @@ for c in range(0, int(np1 * T / dt) + 1):
         break
     X_2 = X_1
     X_1 = X
-
+    print(f"q1, q2 {X[10, 0]}, {X[11, 0]}")
     prev_netlist = updated_netlist
     prev_netlist = curr_netlist
     Pin[c, 0] = X[0, 0]
+    Q1[c, 0] = X[10, 0]
+    Q2[c, 0] = X[11, 0]
 
+plt.plot(Q1, label="Q1")
+plt.plot(Q2, label="Q2")
+plt.legend()
+plt.show()
+plt.close()
 
 # Plot and save results
 plt.figure(figsize=(10, 6))

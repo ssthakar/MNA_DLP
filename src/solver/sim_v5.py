@@ -46,7 +46,7 @@ def create_time_step(
         q1 = X[-1, 0]
         q2 = X[-2, 0]
         tracked_data = jnp.array([p_in, p1, p2, q1, q2], float)
-        # jax.debug.print("printing out tracked data {}", tracked_data)
+        jax.debug.print("printing out tracked data {}", tracked_data)
         return (
             updated_netlist,
             new_X1,

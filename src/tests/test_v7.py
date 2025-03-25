@@ -15,7 +15,7 @@ jax.config.update("jax_platform_name", "cpu")
 # FLAGS
 RUN_INIT_SIM = True
 PLOT_INIT_SIM = True
-RUN_OPTIM = True
+RUN_OPTIM = False
 start_time_total = time.time()
 # paths to data
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -75,7 +75,7 @@ Qin[0 : int(T / dt + 1), 0] = Q_inll[:, 0]
 for i in range(0, np1):
     Qin[int(i * T / dt + 1) : int(i * T / dt + 1 + T / dt), 0] = Q_inll[1:, 0]
 Qin = jnp.array(Qin, float)
-Qin = Qin + 1e-3
+Qin = Qin + 10
 Qin = Qin.flatten()
 
 # Get initial matrices

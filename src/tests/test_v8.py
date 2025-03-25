@@ -15,7 +15,9 @@ jax.config.update("jax_platform_name", "cpu")
 # FLAGS
 RUN_INIT_SIM = True
 PLOT_INIT_SIM = True
-RUN_OPTIM = True
+RUN_OPTIM = False
+SHOW_PARAMS = True
+
 start_time_total = time.time()
 # paths to data
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -34,7 +36,7 @@ flowrate_query_indices = netlist.create_flowrate_query_indices(inductor_indices)
 # Create netlist
 
 # NOTE: until helper function, set manually
-vessel_ids = jnp.array([1, 3, 6], int)
+vessel_ids = jnp.array([1, 3, 5], int)
 cumsum_array = jnp.array([[0], [20], [40], [60]], int)
 acl_data_path = os.path.join(all_files_path, "area_curv_length.dat")
 aorta_flow_data_path = os.path.join(all_files_path, "aorta-flow.dat")
@@ -75,7 +77,7 @@ Qin[0 : int(T / dt + 1), 0] = Q_inll[:, 0]
 for i in range(0, np1):
     Qin[int(i * T / dt + 1) : int(i * T / dt + 1 + T / dt), 0] = Q_inll[1:, 0]
 Qin = jnp.array(Qin, float)
-Qin = Qin + 1e-3
+# Qin = Qin + 1e-3
 Qin = Qin.flatten()
 
 # Get initial matrices
@@ -195,6 +197,8 @@ if RUN_OPTIM:
                 params_in_phys_space,
                 fmt="%.9f",
             )
+            if SHOW_PARAMS:
+                print(f"params at iter {i}: {params_in_phys_space}")
             p1_avg = jnp.mean(tracked_data[:, 0]) * 0.00075
             p1_max = jnp.max(tracked_data[:, 0]) * 0.00075
             p1_min = jnp.min(tracked_data[:, 0]) * 0.00075
