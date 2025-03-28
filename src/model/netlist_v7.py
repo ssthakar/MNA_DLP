@@ -498,6 +498,12 @@ def junction_loss_update(
         # jax.debug.print("bif_dis: {}", bif_dis)
         # jax.debug.print("bif_dis: {} {} {}", Ucom, K, bif_dis)
         new_resistances = base_resistances * (1.0 + bif_dis)
+        jax.debug.print(
+            "new_resistanecs: {}, old_resistances {}, bif_dis: {}",
+            new_resistances,
+            base_resistances,
+            bif_dis,
+        )
         netlist_acc = update_element_values(netlist_acc, r_ids, new_resistances)
 
         return netlist_acc, None
@@ -954,10 +960,10 @@ def junction_loss_coefficient(U: jnp.ndarray, A: jnp.ndarray, theta: jnp.ndarray
         #     C_val,
         #     K,
         # )
-
+        K = jnp.zeros((2, 1), float)
         # jax.debug.print("printing K shape {}", K.shape)
         # jax.debug.print("printing from converging branch")
-        return Ucom.reshape(1, 1), K
+        return Ucom.reshape(1, 1), K * 0
 
     # single inlet into two outlets
     def diverging_flow(

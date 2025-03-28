@@ -1,5 +1,5 @@
 import jax
-import src.model.netlist_v9 as netlist
+import src.model.netlist_v7 as netlist
 import jax.numpy as jnp
 
 

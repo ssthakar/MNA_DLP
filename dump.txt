@@ -1,0 +1,3309 @@
+Netlist(elements=Array([3, 5, 2, 5, 2, 5, 2, 0, 1, 0, 0, 1, 0], dtype=int64), element_values=Array([9.00000000e+01, 1.95260000e+00, 4.78689800e+00, 6.70560000e+00,
+       8.18107856e+00, 6.70560000e+00, 8.17831721e+00, 6.81000000e+02,
+       1.00000000e-04, 3.10130000e+04, 6.81000000e+02, 1.00000000e-04,
+       3.10130000e+04], dtype=float64), element_c2_values=Array([1.000e-01, 4.351e-05, 1.000e-01, 6.740e-02, 1.000e-01, 3.190e-03,
+       1.000e-01, 1.000e-01, 1.000e-01, 1.000e-01, 1.000e-01, 1.000e-01,
+       1.000e-01], dtype=float64), nodes=Array([[0, 1],
+       [1, 2],
+       [2, 3],
+       [3, 4],
+       [4, 5],
+       [3, 7],
+       [7, 8],
+       [5, 6],
+       [6, 0],
+       [6, 0],
+       [8, 9],
+       [9, 0],
+       [9, 0]], dtype=int64), n_nodes=9, n_psources=0, n_flowrates=3, current_time_step=0)
+[-1  9 -1 10 -1 11 -1 -1 -1 -1 -1 -1 -1]
+[-1 -1  9 -1 10 -1 11 -1 -1 -1 -1 -1 -1]
+(12, 1)
+number of timesteps (111, 1)
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[-80.92286486]]
+from converging flow case 0
+C_val from converging flow case 0 [[-80.92286486]]
+from converging flow case 0
+C_val from converging flow case 0 [[-80.92286486]]
+from converging flow case 0
+C_val from converging flow case 0 [[-80.92286486]]
+from converging flow case 0
+C_val from converging flow case 0 [[-80.92286486]]
+from converging flow case 0
+C_val from converging flow case 0 [[-80.92286486]]
+from converging flow case 0
+C_val from converging flow case 0 [[-80.92286486]]
+from converging flow case 0
+C_val from converging flow case 0 [[-80.92286486]]
+from converging flow case 0
+C_val from converging flow case 0 [[-80.92286486]]
+from converging flow case 0
+C_val from converging flow case 0 [[-80.92286486]]
+ 
+
+Iteration 0: 1.9956386089324951 seconds
+
+
+q1, q2 1.0615420104073388e-05, -1.0615420108052422e-05
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.05159259]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05159259]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05159259]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05159259]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05159259]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05159259]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05159259]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05159259]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05159259]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05159259]]
+ 
+
+Iteration 1: 0.08853363990783691 seconds
+
+
+q1, q2 -0.5885281613815564, -0.5886608319078551
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.0574516]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0574516]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0574516]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0574516]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0574516]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0574516]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0574516]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0574516]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0574516]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0574516]]
+ 
+
+Iteration 2: 0.08533740043640137 seconds
+
+
+q1, q2 -1.8529505463011848, -1.8532126479246216
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06668844]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06668844]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06668844]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06668844]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06668844]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06668844]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06668844]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06668844]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06668844]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06668844]]
+ 
+
+Iteration 3: 0.078857421875 seconds
+
+
+q1, q2 -3.011145677044077, -3.011219172158818
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07170001]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07170001]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07170001]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07170001]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07170001]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07170001]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07170001]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07170001]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07170001]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07170001]]
+ 
+
+Iteration 4: 0.08233499526977539 seconds
+
+
+q1, q2 -3.494922782687031, -3.4945379248163486
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07147373]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07147373]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07147373]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07147373]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07147373]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07147373]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07147373]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07147373]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07147373]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07147373]]
+ 
+
+Iteration 5: 0.0823211669921875 seconds
+
+
+q1, q2 -3.39156154333878, -3.3907938402684756
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06948041]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06948041]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06948041]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06948041]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06948041]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06948041]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06948041]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06948041]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06948041]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06948041]]
+ 
+
+Iteration 6: 0.08049392700195312 seconds
+
+
+q1, q2 -3.076732101445098, -3.0758440223446195
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.0666287]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0666287]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0666287]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0666287]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0666287]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0666287]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0666287]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0666287]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0666287]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0666287]]
+ 
+
+Iteration 7: 0.0812227725982666 seconds
+
+
+q1, q2 -2.630223042318412, -2.629430515040859
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.05972522]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05972522]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05972522]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05972522]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05972522]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05972522]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05972522]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05972522]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05972522]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05972522]]
+ 
+
+Iteration 8: 0.08325862884521484 seconds
+
+
+q1, q2 -1.780762072208231, -1.780176188646464
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.01048097]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.01048097]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.01048097]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.01048097]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.01048097]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.01048097]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.01048097]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.01048097]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.01048097]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.01048097]]
+ 
+
+Iteration 9: 0.0812826156616211 seconds
+
+
+q1, q2 -0.3074877800096662, -0.3071273925971574
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.00263216]
+ [0.00979785]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.00263216]
+ [0.00979785]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.00263216]
+ [0.00979785]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.00263216]
+ [0.00979785]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.00263216]
+ [0.00979785]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.00263216]
+ [0.00979785]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.00263216]
+ [0.00979785]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.00263216]
+ [0.00979785]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.00263216]
+ [0.00979785]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.00263216]
+ [0.00979785]]
+ 
+
+Iteration 10: 0.08165359497070312 seconds
+
+
+q1, q2 1.722758522267238, 1.7230589213110676
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.03859103]
+ [0.01137731]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.03859103]
+ [0.01137731]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.03859103]
+ [0.01137731]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.03859103]
+ [0.01137731]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.03859103]
+ [0.01137731]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.03859103]
+ [0.01137731]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.03859103]
+ [0.01137731]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.03859103]
+ [0.01137731]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.03859103]
+ [0.01137731]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.03859103]
+ [0.01137731]]
+ 
+
+Iteration 11: 0.08163881301879883 seconds
+
+
+q1, q2 4.121101391098767, 4.121822923502208
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06857673]
+ [0.01284146]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06857673]
+ [0.01284146]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06857673]
+ [0.01284146]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06857673]
+ [0.01284146]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06857673]
+ [0.01284146]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06857673]
+ [0.01284146]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06857673]
+ [0.01284146]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06857673]
+ [0.01284146]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06857673]
+ [0.01284146]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06857673]
+ [0.01284146]]
+ 
+
+Iteration 12: 0.08245587348937988 seconds
+
+
+q1, q2 6.804699913366999, 6.806685247947196
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09795209]
+ [0.0143816 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09795209]
+ [0.0143816 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09795209]
+ [0.0143816 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09795209]
+ [0.0143816 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09795209]
+ [0.0143816 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09795209]
+ [0.0143816 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09795209]
+ [0.0143816 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09795209]
+ [0.0143816 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09795209]
+ [0.0143816 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09795209]
+ [0.0143816 ]]
+ 
+
+Iteration 13: 0.0828545093536377 seconds
+
+
+q1, q2 9.804030627548693, 9.808483710718452
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12817241]
+ [0.01606861]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12817241]
+ [0.01606861]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12817241]
+ [0.01606861]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12817241]
+ [0.01606861]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12817241]
+ [0.01606861]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12817241]
+ [0.01606861]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12817241]
+ [0.01606861]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12817241]
+ [0.01606861]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12817241]
+ [0.01606861]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12817241]
+ [0.01606861]]
+ 
+
+Iteration 14: 0.08341455459594727 seconds
+
+
+q1, q2 13.187542302095501, 13.196065701964727
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.1601272 ]
+ [0.01796729]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.1601272 ]
+ [0.01796729]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.1601272 ]
+ [0.01796729]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.1601272 ]
+ [0.01796729]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.1601272 ]
+ [0.01796729]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.1601272 ]
+ [0.01796729]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.1601272 ]
+ [0.01796729]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.1601272 ]
+ [0.01796729]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.1601272 ]
+ [0.01796729]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.1601272 ]
+ [0.01796729]]
+ 
+
+Iteration 15: 0.08021950721740723 seconds
+
+
+q1, q2 17.08227046160743, 17.097026968662217
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19459649]
+ [0.02015724]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19459649]
+ [0.02015724]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19459649]
+ [0.02015724]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19459649]
+ [0.02015724]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19459649]
+ [0.02015724]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19459649]
+ [0.02015724]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19459649]
+ [0.02015724]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19459649]
+ [0.02015724]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19459649]
+ [0.02015724]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19459649]
+ [0.02015724]]
+ 
+
+Iteration 16: 0.08368039131164551 seconds
+
+
+q1, q2 21.650239445780393, 21.674262080439508
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23110957]
+ [0.02265916]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23110957]
+ [0.02265916]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23110957]
+ [0.02265916]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23110957]
+ [0.02265916]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23110957]
+ [0.02265916]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23110957]
+ [0.02265916]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23110957]
+ [0.02265916]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23110957]
+ [0.02265916]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23110957]
+ [0.02265916]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23110957]
+ [0.02265916]]
+ 
+
+Iteration 17: 0.08223199844360352 seconds
+
+
+q1, q2 26.847961823973364, 26.885267277014915
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2666018 ]
+ [0.02530285]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2666018 ]
+ [0.02530285]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2666018 ]
+ [0.02530285]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2666018 ]
+ [0.02530285]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2666018 ]
+ [0.02530285]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2666018 ]
+ [0.02530285]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2666018 ]
+ [0.02530285]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2666018 ]
+ [0.02530285]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2666018 ]
+ [0.02530285]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2666018 ]
+ [0.02530285]]
+ 
+
+Iteration 18: 0.08312749862670898 seconds
+
+
+q1, q2 32.17951492925796, 32.234241387136706
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29631214]
+ [0.02770834]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29631214]
+ [0.02770834]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29631214]
+ [0.02770834]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29631214]
+ [0.02770834]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29631214]
+ [0.02770834]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29631214]
+ [0.02770834]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29631214]
+ [0.02770834]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29631214]
+ [0.02770834]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29631214]
+ [0.02770834]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29631214]
+ [0.02770834]]
+ 
+
+Iteration 19: 0.08457612991333008 seconds
+
+
+q1, q2 36.830538981422826, 36.9047692475612
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31686137]
+ [0.02949495]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31686137]
+ [0.02949495]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31686137]
+ [0.02949495]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31686137]
+ [0.02949495]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31686137]
+ [0.02949495]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31686137]
+ [0.02949495]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31686137]
+ [0.02949495]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31686137]
+ [0.02949495]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31686137]
+ [0.02949495]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31686137]
+ [0.02949495]]
+ 
+
+Iteration 20: 0.08033871650695801 seconds
+
+
+q1, q2 40.16955561201391, 40.26117982114045
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32843261]
+ [0.0305436 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32843261]
+ [0.0305436 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32843261]
+ [0.0305436 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32843261]
+ [0.0305436 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32843261]
+ [0.0305436 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32843261]
+ [0.0305436 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32843261]
+ [0.0305436 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32843261]
+ [0.0305436 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32843261]
+ [0.0305436 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32843261]
+ [0.0305436 ]]
+ 
+
+Iteration 21: 0.08153223991394043 seconds
+
+
+q1, q2 42.12535014113303, 42.22813977481694
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.3337519 ]
+ [0.03100467]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.3337519 ]
+ [0.03100467]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.3337519 ]
+ [0.03100467]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.3337519 ]
+ [0.03100467]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.3337519 ]
+ [0.03100467]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.3337519 ]
+ [0.03100467]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.3337519 ]
+ [0.03100467]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.3337519 ]
+ [0.03100467]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.3337519 ]
+ [0.03100467]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.3337519 ]
+ [0.03100467]]
+ 
+
+Iteration 22: 0.08276987075805664 seconds
+
+
+q1, q2 43.05805862983758, 43.164021126716456
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33523757]
+ [0.03106613]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33523757]
+ [0.03106613]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33523757]
+ [0.03106613]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33523757]
+ [0.03106613]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33523757]
+ [0.03106613]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33523757]
+ [0.03106613]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33523757]
+ [0.03106613]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33523757]
+ [0.03106613]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33523757]
+ [0.03106613]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33523757]
+ [0.03106613]]
+ 
+
+Iteration 23: 0.08189845085144043 seconds
+
+
+q1, q2 43.31365659750423, 43.41539700902241
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33346196]
+ [0.03078786]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33346196]
+ [0.03078786]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33346196]
+ [0.03078786]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33346196]
+ [0.03078786]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33346196]
+ [0.03078786]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33346196]
+ [0.03078786]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33346196]
+ [0.03078786]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33346196]
+ [0.03078786]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33346196]
+ [0.03078786]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.33346196]
+ [0.03078786]]
+ 
+
+Iteration 24: 0.08213663101196289 seconds
+
+
+q1, q2 42.961999027891274, 43.05349448271827
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32793826]
+ [0.03014344]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32793826]
+ [0.03014344]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32793826]
+ [0.03014344]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32793826]
+ [0.03014344]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32793826]
+ [0.03014344]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32793826]
+ [0.03014344]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32793826]
+ [0.03014344]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32793826]
+ [0.03014344]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32793826]
+ [0.03014344]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.32793826]
+ [0.03014344]]
+ 
+
+Iteration 25: 0.08144450187683105 seconds
+
+
+q1, q2 41.923808421593755, 42.00016711347267
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31862434]
+ [0.02914526]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31862434]
+ [0.02914526]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31862434]
+ [0.02914526]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31862434]
+ [0.02914526]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31862434]
+ [0.02914526]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31862434]
+ [0.02914526]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31862434]
+ [0.02914526]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31862434]
+ [0.02914526]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31862434]
+ [0.02914526]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.31862434]
+ [0.02914526]]
+ 
+
+Iteration 26: 0.08377528190612793 seconds
+
+
+q1, q2 40.22441661077041, 40.281888310339724
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.30636463]
+ [0.02788517]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.30636463]
+ [0.02788517]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.30636463]
+ [0.02788517]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.30636463]
+ [0.02788517]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.30636463]
+ [0.02788517]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.30636463]
+ [0.02788517]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.30636463]
+ [0.02788517]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.30636463]
+ [0.02788517]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.30636463]
+ [0.02788517]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.30636463]
+ [0.02788517]]
+ 
+
+Iteration 27: 0.08253359794616699 seconds
+
+
+q1, q2 38.04660308184131, 38.083061918521935
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29209634]
+ [0.0264651 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29209634]
+ [0.0264651 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29209634]
+ [0.0264651 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29209634]
+ [0.0264651 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29209634]
+ [0.0264651 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29209634]
+ [0.0264651 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29209634]
+ [0.0264651 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29209634]
+ [0.0264651 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29209634]
+ [0.0264651 ]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.29209634]
+ [0.0264651 ]]
+ 
+
+Iteration 28: 0.0825655460357666 seconds
+
+
+q1, q2 35.58417362503381, 35.59937363266956
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.27617993]
+ [0.02493774]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.27617993]
+ [0.02493774]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.27617993]
+ [0.02493774]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.27617993]
+ [0.02493774]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.27617993]
+ [0.02493774]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.27617993]
+ [0.02493774]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.27617993]
+ [0.02493774]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.27617993]
+ [0.02493774]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.27617993]
+ [0.02493774]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.27617993]
+ [0.02493774]]
+ 
+
+Iteration 29: 0.0843048095703125 seconds
+
+
+q1, q2 32.93482509509387, 32.93007886281156
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.25864248]
+ [0.02332403]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.25864248]
+ [0.02332403]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.25864248]
+ [0.02332403]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.25864248]
+ [0.02332403]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.25864248]
+ [0.02332403]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.25864248]
+ [0.02332403]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.25864248]
+ [0.02332403]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.25864248]
+ [0.02332403]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.25864248]
+ [0.02332403]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.25864248]
+ [0.02332403]]
+ 
+
+Iteration 30: 0.08262896537780762 seconds
+
+
+q1, q2 30.13724725042903, 30.114869457254816
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23945115]
+ [0.02163418]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23945115]
+ [0.02163418]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23945115]
+ [0.02163418]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23945115]
+ [0.02163418]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23945115]
+ [0.02163418]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23945115]
+ [0.02163418]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23945115]
+ [0.02163418]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23945115]
+ [0.02163418]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23945115]
+ [0.02163418]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.23945115]
+ [0.02163418]]
+ 
+
+Iteration 31: 0.08245563507080078 seconds
+
+
+q1, q2 27.215937342672923, 27.178762299478464
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2179885 ]
+ [0.01982803]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2179885 ]
+ [0.01982803]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2179885 ]
+ [0.01982803]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2179885 ]
+ [0.01982803]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2179885 ]
+ [0.01982803]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2179885 ]
+ [0.01982803]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2179885 ]
+ [0.01982803]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2179885 ]
+ [0.01982803]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2179885 ]
+ [0.01982803]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.2179885 ]
+ [0.01982803]]
+ 
+
+Iteration 32: 0.08167290687561035 seconds
+
+
+q1, q2 24.128054833934264, 24.078977375813917
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19266255]
+ [0.01778499]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19266255]
+ [0.01778499]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19266255]
+ [0.01778499]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19266255]
+ [0.01778499]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19266255]
+ [0.01778499]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19266255]
+ [0.01778499]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19266255]
+ [0.01778499]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19266255]
+ [0.01778499]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19266255]
+ [0.01778499]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.19266255]
+ [0.01778499]]
+ 
+
+Iteration 33: 0.08480334281921387 seconds
+
+
+q1, q2 20.742086798471778, 20.683687141208647
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.16217799]
+ [0.01538532]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.16217799]
+ [0.01538532]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.16217799]
+ [0.01538532]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.16217799]
+ [0.01538532]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.16217799]
+ [0.01538532]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.16217799]
+ [0.01538532]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.16217799]
+ [0.01538532]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.16217799]
+ [0.01538532]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.16217799]
+ [0.01538532]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.16217799]
+ [0.01538532]]
+ 
+
+Iteration 34: 0.08230257034301758 seconds
+
+
+q1, q2 17.000325192176188, 16.93494329285012
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12800054]
+ [0.01264549]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12800054]
+ [0.01264549]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12800054]
+ [0.01264549]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12800054]
+ [0.01264549]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12800054]
+ [0.01264549]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12800054]
+ [0.01264549]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12800054]
+ [0.01264549]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12800054]
+ [0.01264549]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12800054]
+ [0.01264549]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.12800054]
+ [0.01264549]]
+ 
+
+Iteration 35: 0.08231306076049805 seconds
+
+
+q1, q2 13.115211241051155, 13.04548862969349
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09445521]
+ [0.00966526]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09445521]
+ [0.00966526]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09445521]
+ [0.00966526]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09445521]
+ [0.00966526]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09445521]
+ [0.00966526]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09445521]
+ [0.00966526]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09445521]
+ [0.00966526]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09445521]
+ [0.00966526]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09445521]
+ [0.00966526]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.09445521]
+ [0.00966526]]
+ 
+
+Iteration 36: 0.0841224193572998 seconds
+
+
+q1, q2 9.473406729010104, 9.402557390972012
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06304075]
+ [0.00610811]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06304075]
+ [0.00610811]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06304075]
+ [0.00610811]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06304075]
+ [0.00610811]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06304075]
+ [0.00610811]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06304075]
+ [0.00610811]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06304075]
+ [0.00610811]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06304075]
+ [0.00610811]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06304075]
+ [0.00610811]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[0.06304075]
+ [0.00610811]]
+ 
+
+Iteration 37: 0.08431839942932129 seconds
+
+
+q1, q2 6.24783170189017, 6.179099828349102
+inflow
+from diverging flow case 0
+C_val from diverging flow case 0 [[ 0.0233347 ]
+ [-0.00103761]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[ 0.0233347 ]
+ [-0.00103761]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[ 0.0233347 ]
+ [-0.00103761]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[ 0.0233347 ]
+ [-0.00103761]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[ 0.0233347 ]
+ [-0.00103761]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[ 0.0233347 ]
+ [-0.00103761]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[ 0.0233347 ]
+ [-0.00103761]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[ 0.0233347 ]
+ [-0.00103761]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[ 0.0233347 ]
+ [-0.00103761]]
+from diverging flow case 0
+C_val from diverging flow case 0 [[ 0.0233347 ]
+ [-0.00103761]]
+ 
+
+Iteration 38: 0.08240842819213867 seconds
+
+
+q1, q2 3.182066434641008, 3.1179566761399458
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[-0.47769753]]
+from converging flow case 0
+C_val from converging flow case 0 [[-0.47769753]]
+from converging flow case 0
+C_val from converging flow case 0 [[-0.47769753]]
+from converging flow case 0
+C_val from converging flow case 0 [[-0.47769753]]
+from converging flow case 0
+C_val from converging flow case 0 [[-0.47769753]]
+from converging flow case 0
+C_val from converging flow case 0 [[-0.47769753]]
+from converging flow case 0
+C_val from converging flow case 0 [[-0.47769753]]
+from converging flow case 0
+C_val from converging flow case 0 [[-0.47769753]]
+from converging flow case 0
+C_val from converging flow case 0 [[-0.47769753]]
+from converging flow case 0
+C_val from converging flow case 0 [[-0.47769753]]
+ 
+
+Iteration 39: 0.08195829391479492 seconds
+
+
+q1, q2 -0.09639121453509843, -0.15422850724116152
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.0526832]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0526832]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0526832]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0526832]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0526832]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0526832]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0526832]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0526832]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0526832]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0526832]]
+ 
+
+Iteration 40: 0.08240842819213867 seconds
+
+
+q1, q2 -3.548598011394632, -3.59885057845196
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.08167649]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08167649]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08167649]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08167649]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08167649]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08167649]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08167649]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08167649]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08167649]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08167649]]
+ 
+
+Iteration 41: 0.08275890350341797 seconds
+
+
+q1, q2 -6.6494857223190005, -6.690951843897194
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.09932679]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.09932679]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.09932679]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.09932679]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.09932679]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.09932679]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.09932679]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.09932679]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.09932679]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.09932679]]
+ 
+
+Iteration 42: 0.08062601089477539 seconds
+
+
+q1, q2 -8.90224938708163, -8.934396263819622
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.10924804]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.10924804]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.10924804]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.10924804]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.10924804]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.10924804]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.10924804]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.10924804]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.10924804]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.10924804]]
+ 
+
+Iteration 43: 0.08119630813598633 seconds
+
+
+q1, q2 -10.31435406093623, -10.337798209700212
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.11504847]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11504847]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11504847]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11504847]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11504847]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11504847]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11504847]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11504847]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11504847]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11504847]]
+ 
+
+Iteration 44: 0.08346295356750488 seconds
+
+
+q1, q2 -11.255324217777977, -11.27149144070753
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.11895379]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11895379]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11895379]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11895379]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11895379]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11895379]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11895379]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11895379]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11895379]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11895379]]
+ 
+
+Iteration 45: 0.08172106742858887 seconds
+
+
+q1, q2 -11.930222929876454, -11.940731539676559
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.12045995]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.12045995]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.12045995]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.12045995]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.12045995]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.12045995]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.12045995]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.12045995]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.12045995]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.12045995]]
+ 
+
+Iteration 46: 0.08253026008605957 seconds
+
+
+q1, q2 -12.171623518353373, -12.178085193483296
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.11824533]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11824533]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11824533]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11824533]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11824533]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11824533]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11824533]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11824533]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11824533]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11824533]]
+ 
+
+Iteration 47: 0.07990503311157227 seconds
+
+
+q1, q2 -11.766413199623523, -11.770529570367914
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.11275106]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11275106]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11275106]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11275106]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11275106]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11275106]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11275106]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11275106]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11275106]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.11275106]]
+ 
+
+Iteration 48: 0.08342409133911133 seconds
+
+
+q1, q2 -10.820394797083209, -10.823806748086268
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.1063087]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.1063087]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.1063087]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.1063087]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.1063087]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.1063087]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.1063087]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.1063087]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.1063087]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.1063087]]
+ 
+
+Iteration 49: 0.08164310455322266 seconds
+
+
+q1, q2 -9.692463756517315, -9.696338578197203
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.10058084]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.10058084]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.10058084]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.10058084]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.10058084]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.10058084]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.10058084]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.10058084]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.10058084]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.10058084]]
+ 
+
+Iteration 50: 0.08222174644470215 seconds
+
+
+q1, q2 -8.651383748230055, -8.656216999591356
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.09534974]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.09534974]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.09534974]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.09534974]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.09534974]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.09534974]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.09534974]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.09534974]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.09534974]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.09534974]]
+ 
+
+Iteration 51: 0.08367276191711426 seconds
+
+
+q1, q2 -7.70512418088492, -7.710908670299521
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.08966853]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08966853]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08966853]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08966853]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08966853]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08966853]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08966853]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08966853]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08966853]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08966853]]
+ 
+
+Iteration 52: 0.08352327346801758 seconds
+
+
+q1, q2 -6.722629474794632, -6.7291502723892025
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.08292818]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08292818]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08292818]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08292818]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08292818]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08292818]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08292818]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08292818]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08292818]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.08292818]]
+ 
+
+Iteration 53: 0.08032393455505371 seconds
+
+
+q1, q2 -5.611307648003604, -5.61833327492194
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07519959]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07519959]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07519959]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07519959]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07519959]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07519959]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07519959]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07519959]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07519959]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07519959]]
+ 
+
+Iteration 54: 0.08413243293762207 seconds
+
+
+q1, q2 -4.385334473377922, -4.392654701495121
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06745087]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06745087]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06745087]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06745087]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06745087]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06745087]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06745087]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06745087]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06745087]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06745087]]
+ 
+
+Iteration 55: 0.08187365531921387 seconds
+
+
+q1, q2 -3.170065387884097, -3.177455149554515
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159515]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159515]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159515]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159515]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159515]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159515]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159515]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159515]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159515]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159515]]
+ 
+
+Iteration 56: 0.08585071563720703 seconds
+
+
+q1, q2 -2.1664604940057894, -2.173668137719134
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.05893313]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05893313]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05893313]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05893313]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05893313]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05893313]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05893313]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05893313]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05893313]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05893313]]
+ 
+
+Iteration 57: 0.08057141304016113 seconds
+
+
+q1, q2 -1.5218260642838055, -1.528614944065513
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.05802463]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05802463]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05802463]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05802463]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05802463]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05802463]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05802463]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05802463]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05802463]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05802463]]
+ 
+
+Iteration 58: 0.08246731758117676 seconds
+
+
+q1, q2 -1.1884858184469504, -1.1946740426655424
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.05702636]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05702636]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05702636]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05702636]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05702636]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05702636]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05702636]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05702636]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05702636]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05702636]]
+ 
+
+Iteration 59: 0.08347773551940918 seconds
+
+
+q1, q2 -0.9730057167679004, -0.9784780654231193
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.05574984]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05574984]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05574984]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05574984]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05574984]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05574984]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05574984]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05574984]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05574984]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05574984]]
+ 
+
+Iteration 60: 0.0857994556427002 seconds
+
+
+q1, q2 -0.7649484713770608, -0.7696721944522908
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.05526296]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05526296]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05526296]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05526296]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05526296]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05526296]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05526296]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05526296]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05526296]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05526296]]
+ 
+
+Iteration 61: 0.08029818534851074 seconds
+
+
+q1, q2 -0.6469715316291301, -0.650999166660219
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.05580267]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05580267]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05580267]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05580267]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05580267]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05580267]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05580267]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05580267]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05580267]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05580267]]
+ 
+
+Iteration 62: 0.08642077445983887 seconds
+
+
+q1, q2 -0.723639151809418, -0.7270647356863366
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.05678199]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05678199]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05678199]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05678199]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05678199]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05678199]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05678199]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05678199]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05678199]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05678199]]
+ 
+
+Iteration 63: 0.08193373680114746 seconds
+
+
+q1, q2 -0.9232633705171898, -0.9261570613594406
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.05782945]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05782945]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05782945]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05782945]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05782945]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05782945]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05782945]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05782945]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05782945]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05782945]]
+ 
+
+Iteration 64: 0.08285140991210938 seconds
+
+
+q1, q2 -1.0796976275209147, -1.0820950119293413
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.05848341]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05848341]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05848341]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05848341]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05848341]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05848341]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05848341]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05848341]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05848341]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05848341]]
+ 
+
+Iteration 65: 0.08226561546325684 seconds
+
+
+q1, q2 -1.175236153007506, -1.1771890298398404
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.05953403]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05953403]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05953403]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05953403]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05953403]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05953403]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05953403]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05953403]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05953403]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05953403]]
+ 
+
+Iteration 66: 0.08417868614196777 seconds
+
+
+q1, q2 -1.3743166569968683, -1.3759112707767083
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159994]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159994]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159994]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159994]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159994]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159994]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159994]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159994]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159994]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06159994]]
+ 
+
+Iteration 67: 0.0824427604675293 seconds
+
+
+q1, q2 -1.7956307039542214, -1.7969365505188855
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06468424]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06468424]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06468424]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06468424]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06468424]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06468424]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06468424]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06468424]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06468424]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06468424]]
+ 
+
+Iteration 68: 0.0820457935333252 seconds
+
+
+q1, q2 -2.3569531116841973, -2.357967426132427
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06800347]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06800347]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06800347]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06800347]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06800347]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06800347]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06800347]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06800347]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06800347]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06800347]]
+ 
+
+Iteration 69: 0.08254885673522949 seconds
+
+
+q1, q2 -2.8908099984785647, -2.891481246092829
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07075844]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07075844]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07075844]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07075844]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07075844]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07075844]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07075844]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07075844]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07075844]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07075844]]
+ 
+
+Iteration 70: 0.08211302757263184 seconds
+
+
+q1, q2 -3.3222564561324894, -3.322557549080958
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07289124]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07289124]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07289124]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07289124]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07289124]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07289124]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07289124]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07289124]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07289124]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07289124]]
+ 
+
+Iteration 71: 0.08159017562866211 seconds
+
+
+q1, q2 -3.6666464825028378, -3.6666025201468746
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07450823]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07450823]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07450823]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07450823]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07450823]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07450823]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07450823]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07450823]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07450823]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07450823]]
+ 
+
+Iteration 72: 0.08240675926208496 seconds
+
+
+q1, q2 -3.9319248438650023, -3.9315935170313474
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07564143]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07564143]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07564143]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07564143]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07564143]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07564143]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07564143]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07564143]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07564143]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07564143]]
+ 
+
+Iteration 73: 0.08358645439147949 seconds
+
+
+q1, q2 -4.11889895474761, -4.118354095175433
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07653167]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07653167]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07653167]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07653167]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07653167]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07653167]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07653167]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07653167]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07653167]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07653167]]
+ 
+
+Iteration 74: 0.08137106895446777 seconds
+
+
+q1, q2 -4.27031255524687, -4.2696317002804784
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07736049]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07736049]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07736049]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07736049]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07736049]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07736049]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07736049]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07736049]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07736049]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07736049]]
+ 
+
+Iteration 75: 0.08426070213317871 seconds
+
+
+q1, q2 -4.413703402567756, -4.412946609696863
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07773226]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07773226]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07773226]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07773226]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07773226]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07773226]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07773226]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07773226]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07773226]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07773226]]
+ 
+
+Iteration 76: 0.08184933662414551 seconds
+
+
+q1, q2 -4.474563996500429, -4.473773966887884
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07701988]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07701988]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07701988]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07701988]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07701988]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07701988]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07701988]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07701988]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07701988]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07701988]]
+ 
+
+Iteration 77: 0.0820925235748291 seconds
+
+
+q1, q2 -4.353148860034183, -4.352387947209928
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07542385]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07542385]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07542385]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07542385]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07542385]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07542385]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07542385]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07542385]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07542385]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07542385]]
+ 
+
+Iteration 78: 0.08159327507019043 seconds
+
+
+q1, q2 -4.089518080839803, -4.088882007385913
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07399502]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07399502]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07399502]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07399502]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07399502]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07399502]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07399502]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07399502]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07399502]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07399502]]
+ 
+
+Iteration 79: 0.08289957046508789 seconds
+
+
+q1, q2 -3.8410259318240176, -3.8405949825842054
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07306019]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07306019]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07306019]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07306019]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07306019]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07306019]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07306019]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07306019]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07306019]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07306019]]
+ 
+
+Iteration 80: 0.0823969841003418 seconds
+
+
+q1, q2 -3.6711928486559082, -3.6709827983617536
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07194336]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07194336]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07194336]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07194336]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07194336]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07194336]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07194336]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07194336]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07194336]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07194336]]
+ 
+
+Iteration 81: 0.08286118507385254 seconds
+
+
+q1, q2 -3.4808390805319496, -3.4808144349645636
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07028873]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07028873]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07028873]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07028873]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07028873]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07028873]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07028873]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07028873]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07028873]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07028873]]
+ 
+
+Iteration 82: 0.0828251838684082 seconds
+
+
+q1, q2 -3.208187164475446, -3.2083158850854723
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06893013]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06893013]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06893013]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06893013]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06893013]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06893013]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06893013]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06893013]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06893013]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06893013]]
+ 
+
+Iteration 83: 0.08057308197021484 seconds
+
+
+q1, q2 -2.9702194790796588, -2.9704900081772307
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06851776]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06851776]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06851776]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06851776]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06851776]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06851776]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06851776]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06851776]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06851776]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06851776]]
+ 
+
+Iteration 84: 0.08195638656616211 seconds
+
+
+q1, q2 -2.8829834770714173, -2.883369629975269
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06825478]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06825478]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06825478]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06825478]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06825478]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06825478]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06825478]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06825478]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06825478]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06825478]]
+ 
+
+Iteration 85: 0.08200383186340332 seconds
+
+
+q1, q2 -2.835960129418152, -2.836399092250582
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06694327]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06694327]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06694327]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06694327]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06694327]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06694327]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06694327]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06694327]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06694327]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06694327]]
+ 
+
+Iteration 86: 0.07916569709777832 seconds
+
+
+q1, q2 -2.6265492916237654, -2.626986822654054
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06489588]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06489588]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06489588]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06489588]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06489588]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06489588]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06489588]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06489588]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06489588]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06489588]]
+ 
+
+Iteration 87: 0.08186697959899902 seconds
+
+
+q1, q2 -2.304023815723367, -2.3044672870017044
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06444243]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06444243]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06444243]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06444243]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06444243]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06444243]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06444243]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06444243]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06444243]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06444243]]
+ 
+
+Iteration 88: 0.08182334899902344 seconds
+
+
+q1, q2 -2.187538174295366, -2.188028368789207
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06594053]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06594053]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06594053]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06594053]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06594053]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06594053]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06594053]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06594053]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06594053]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06594053]]
+ 
+
+Iteration 89: 0.08241415023803711 seconds
+
+
+q1, q2 -2.470318558044039, -2.470849137303166
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06848398]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06848398]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06848398]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06848398]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06848398]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06848398]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06848398]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06848398]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06848398]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06848398]]
+ 
+
+Iteration 90: 0.08188557624816895 seconds
+
+
+q1, q2 -2.953720555747484, -2.954181481766431
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07068749]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07068749]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07068749]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07068749]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07068749]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07068749]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07068749]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07068749]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07068749]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07068749]]
+ 
+
+Iteration 91: 0.0818629264831543 seconds
+
+
+q1, q2 -3.2879001245750494, -3.2881539687338757
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.0713459]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0713459]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0713459]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0713459]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0713459]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0713459]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0713459]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0713459]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0713459]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0713459]]
+ 
+
+Iteration 92: 0.08170628547668457 seconds
+
+
+q1, q2 -3.3692494241921533, -3.3692682695039395
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07128334]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07128334]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07128334]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07128334]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07128334]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07128334]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07128334]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07128334]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07128334]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07128334]]
+ 
+
+Iteration 93: 0.08133292198181152 seconds
+
+
+q1, q2 -3.3563478641883875, -3.3562123546535125
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07131021]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07131021]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07131021]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07131021]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07131021]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07131021]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07131021]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07131021]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07131021]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07131021]]
+ 
+
+Iteration 94: 0.08280777931213379 seconds
+
+
+q1, q2 -3.3608648372661314, -3.3606640940311956
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.07097652]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07097652]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07097652]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07097652]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07097652]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07097652]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07097652]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07097652]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07097652]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.07097652]]
+ 
+
+Iteration 95: 0.08166933059692383 seconds
+
+
+q1, q2 -3.3042133731133196, -3.303997315533307
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.0696749]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0696749]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0696749]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0696749]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0696749]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0696749]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0696749]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0696749]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0696749]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0696749]]
+ 
+
+Iteration 96: 0.08175277709960938 seconds
+
+
+q1, q2 -3.09323667209939, -3.0930480890359737
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.0677086]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0677086]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0677086]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0677086]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0677086]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0677086]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0677086]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0677086]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0677086]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0677086]]
+ 
+
+Iteration 97: 0.07932448387145996 seconds
+
+
+q1, q2 -2.776723746402104, -2.77662028409632
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06582235]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06582235]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06582235]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06582235]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06582235]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06582235]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06582235]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06582235]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06582235]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06582235]]
+ 
+
+Iteration 98: 0.0784614086151123 seconds
+
+
+q1, q2 -2.4583274531128483, -2.4583543381125152
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06414202]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06414202]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06414202]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06414202]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06414202]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06414202]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06414202]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06414202]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06414202]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06414202]]
+ 
+
+Iteration 99: 0.07872509956359863 seconds
+
+
+q1, q2 -2.1683335094737632, -2.1684979920955962
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06259384]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06259384]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06259384]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06259384]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06259384]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06259384]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06259384]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06259384]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06259384]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06259384]]
+ 
+
+Iteration 100: 0.07969331741333008 seconds
+
+
+q1, q2 -1.902351975014784, -1.9026326710571098
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06143994]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06143994]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06143994]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06143994]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06143994]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06143994]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06143994]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06143994]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06143994]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06143994]]
+ 
+
+Iteration 101: 0.07949995994567871 seconds
+
+
+q1, q2 -1.6940635749796642, -1.6944315314965068
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.06070621]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06070621]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06070621]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06070621]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06070621]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06070621]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06070621]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06070621]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06070621]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.06070621]]
+ 
+
+Iteration 102: 0.08045625686645508 seconds
+
+
+q1, q2 -1.5558094100847548, -1.556231225273063
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.05994274]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05994274]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05994274]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05994274]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05994274]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05994274]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05994274]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05994274]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05994274]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05994274]]
+ 
+
+Iteration 103: 0.07809281349182129 seconds
+
+
+q1, q2 -1.4255108787998994, -1.4259469574037915
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.05906612]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05906612]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05906612]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05906612]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05906612]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05906612]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05906612]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05906612]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05906612]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05906612]]
+ 
+
+Iteration 104: 0.07969212532043457 seconds
+
+
+q1, q2 -1.2808730921512597, -1.2812966412061213
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.05883695]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05883695]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05883695]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05883695]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05883695]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05883695]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05883695]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05883695]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05883695]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05883695]]
+ 
+
+Iteration 105: 0.0785989761352539 seconds
+
+
+q1, q2 -1.2278818557495104, -1.2282939970309341
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.05934451]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05934451]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05934451]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05934451]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05934451]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05934451]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05934451]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05934451]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05934451]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05934451]]
+ 
+
+Iteration 106: 0.08042120933532715 seconds
+
+
+q1, q2 -1.3179898388022737, -1.31838998185306
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.0594294]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0594294]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0594294]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0594294]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0594294]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0594294]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0594294]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0594294]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0594294]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.0594294]]
+ 
+
+Iteration 107: 0.07887578010559082 seconds
+
+
+q1, q2 -1.3262464709815127, -1.3265902134483833
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.05630543]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05630543]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05630543]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05630543]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05630543]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05630543]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05630543]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05630543]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05630543]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.05630543]]
+ 
+
+Iteration 108: 0.07877945899963379 seconds
+
+
+q1, q2 -0.9474352151976354, -0.9476740560610339
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[0.04480505]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.04480505]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.04480505]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.04480505]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.04480505]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.04480505]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.04480505]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.04480505]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.04480505]]
+from converging flow case 0
+C_val from converging flow case 0 [[0.04480505]]
+ 
+
+Iteration 109: 0.07849383354187012 seconds
+
+
+q1, q2 -0.2958846655670044, -0.29604067690877445
+outflow
+from converging flow case 0
+C_val from converging flow case 0 [[-69.23193403]]
+from converging flow case 0
+C_val from converging flow case 0 [[-69.23193403]]
+from converging flow case 0
+C_val from converging flow case 0 [[-69.23193403]]
+from converging flow case 0
+C_val from converging flow case 0 [[-69.23193403]]
+from converging flow case 0
+C_val from converging flow case 0 [[-69.23193403]]
+from converging flow case 0
+C_val from converging flow case 0 [[-69.23193403]]
+from converging flow case 0
+C_val from converging flow case 0 [[-69.23193403]]
+from converging flow case 0
+C_val from converging flow case 0 [[-69.23193403]]
+from converging flow case 0
+C_val from converging flow case 0 [[-69.23193403]]
+from converging flow case 0
+C_val from converging flow case 0 [[-69.23193403]]
+ 
+
+Iteration 110: 0.08299660682678223 seconds
+
+
+q1, q2 9.279363854678636e-05, -9.279363477379538e-05

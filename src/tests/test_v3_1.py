@@ -1,6 +1,6 @@
 import os
 import jax
-import src.model.netlist_v9 as netlist
+import src.model.netlist_v7 as netlist
 from src.utils.fft import fft_data
 import time
 import jax.numpy as jnp
@@ -19,7 +19,6 @@ output_path = "./output"
 # Create netlist
 test_netlist = netlist.create_netlist(data_file_path)
 print(test_netlist)
-# breakpoint()
 inductor_indices_test = netlist.create_inductor_index_mask(test_netlist)
 flowrate_indices_test = netlist.create_flowrate_query_indices(inductor_indices_test)
 print(flowrate_indices_test)
@@ -71,6 +70,7 @@ for i in range(0, np1):
 Qin = jnp.array(Qin, float)
 # Qin = Qin + 1e-3
 plt.plot(Qin)
+plt.grid(True)
 plt.show()
 print(f"number of timesteps {Qin.shape}")
 Pin = np.zeros_like(Qin)
@@ -98,10 +98,6 @@ for c in range(0, int(np1 * T / dt) + 1):
     curr_netlist = netlist.update_element_values(
         prev_netlist, jnp.array([0]), jnp.array(Qin[c, 0])
     )
-    if Qin[c, 0] >= 0:
-        print("inflow")
-    else:
-        print("outflow")
 
     # Use the assemble_matrices_non_linear function which integrates fixed point iteration
     G_curr, b_curr, updated_netlist = netlist.assemble_matrices_with_non_linear_solve(
@@ -127,7 +123,7 @@ for c in range(0, int(np1 * T / dt) + 1):
 
     if jnp.isnan(b_curr).any() or jnp.isnan(X).any():
         print("nan detected")
-        # break
+        break
     X_2 = X_1
     X_1 = X
     print(f"q1, q2 {X[10, 0]}, {X[11, 0]}")

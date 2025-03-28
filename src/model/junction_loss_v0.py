@@ -1,311 +1,495 @@
-import jax
 import jax.numpy as jnp
-import src.model.netlist_v7 as netlist
+import jax
 
 RHO = 1.06
 MU = 0.04
 
 
-def wrapTopi(theta: jnp.ndarray):
-    xwrap = jnp.remainder(theta, 2 * jnp.pi)
-    mask = jnp.abs(xwrap) > jnp.pi
-    correction = 2 * jnp.pi * jnp.sign(xwrap)
-    xwrap = jnp.where(mask, xwrap - correction, xwrap)
-    theta = xwrap
-    return theta
+def wrapTopi(angle):
+    """Wrap angle to [-pi, pi]"""
+    return jnp.arctan2(jnp.sin(angle), jnp.cos(angle))
 
 
-def wrapTo2pi(theta: jnp.ndarray):
-    xwrap = jnp.remainder(theta, 4 * jnp.pi)
-    mask = jnp.abs(xwrap) > 2 * jnp.pi
-    correction = 4 * jnp.pi * jnp.sign(xwrap)
-    xwrap = jnp.where(mask, xwrap - correction, xwrap)
-    theta = xwrap
-    return theta
+def wrapTo2pi(angle):
+    """Wrap angle to [0, 2*pi]"""
+    return jnp.mod(angle, 2 * jnp.pi)
+
+
+def diverging_flow_case_0(
+    U: jnp.ndarray,  # velocity at junction
+    A: jnp.ndarray,  # areas of branches
+    theta: jnp.ndarray,  # angles of all branches wrt datum
+    Q: jnp.ndarray,  # flowrate at junction , technically redundant, artifact from previous implementation
+):
+    """
+    Diverging flow case 0: [+ - -]
+    Branch 0 is the supplier, branches 1 and 2 are collectors
+    """
+
+    # p_loss = Cj*U_j^2 + 1/2*Rho*(U_i^2 - U_j^2)
+    loss_coeff = jnp.array((3, 1), float)
+
+    # supplier and collector indices
+    si_array = jnp.array([0])
+    ci_array = jnp.array([1, 2])
+
+    Q_si = Q[si_array, :]
+    Q_ci = Q[ci_array, :]
+
+    U_si = U[si_array, :]
+    U_ci = U[ci_array, :]
+
+    Qtot = jnp.sum(Q[si_array, :])
+
+    FlowRatio = -Q_ci / Qtot
+
+    theta_si = theta[si_array, :]
+    theta_ci = theta[ci_array, :]
+
+    PseudoColAngle = jnp.mean(theta_ci)
+
+    sin_weighted = jnp.sum(jnp.sin(theta_si) * Q_si)
+    cos_weighted = jnp.sum(jnp.cos(theta_si) * Q_si)
+
+    PseudoSupAngle = jnp.arctan2(sin_weighted, cos_weighted)
+
+    PseudoColAngle = jax.lax.cond(
+        jnp.abs(PseudoSupAngle - PseudoColAngle) < 0.5 * jnp.pi,
+        lambda x: x + jnp.pi,
+        lambda x: x,
+        PseudoColAngle,
+    )
+
+    theta = wrapTopi(theta - PseudoColAngle)
+    theta_si = theta[si_array, :]
+    theta_ci = theta[ci_array, :]
+
+    pseudodirection = jnp.sign(jnp.mean(jnp.sin(theta_si) * Q_si))
+
+    theta = jax.lax.cond(pseudodirection < 0, lambda x: -x, lambda x: x, theta)
+    theta_si = theta[si_array, :]
+    theta_ci = theta[ci_array, :]
+
+    sin_weighted_abs = jnp.sum(jnp.sin(jnp.abs(theta_si)) * Q_si)
+    cos_weighted_abs = jnp.sum(jnp.cos(jnp.abs(theta_si)) * Q_si)
+
+    PseudoSupAngle = jnp.arctan2(sin_weighted_abs, cos_weighted_abs)
+
+    etransferfactor = (0.8 * (jnp.pi - PseudoSupAngle) * jnp.sign(theta_ci) - 0.2) * (
+        1 - FlowRatio
+    )
+
+    U_Q_weighted = jnp.sum(U_si * Q_si) / Qtot
+
+    TotPseudoArea = Qtot / ((1 - etransferfactor) * U_Q_weighted)
+
+    A_ci = A[ci_array, :]
+    AreaRatio = TotPseudoArea / (A_ci)
+
+    theta = wrapTo2pi(PseudoSupAngle - theta_ci)
+    phi = theta
+
+    C_val = (1 - jnp.exp(-FlowRatio / 0.02)) * (
+        1 - (1.0 / (AreaRatio * FlowRatio)) * jnp.cos(0.75 * (jnp.pi - phi))
+    )
+    C_val_to_return = jnp.zeros_like(
+        loss_coeff,
+    )
+
+    # extremely important piece of code below:
+    U0 = U_si[0, 0]
+    U1 = U_ci[0, 0]
+    U2 = U_ci[1, 0]
+    C1_val = C_val[0, 0]
+    C2_val = C_val[0, 0]
+    C0 = 0.0
+    C1 = C1_val * RHO * U1**2 + 0.5 * RHO * (U0**2 - U1**2)
+    C2 = C2_val * RHO * U2**2 + 0.5 * RHO * (U0**2 - U2**2)
+
+    C_val_to_return = C_val_to_return.at[0, 0].set(C0)
+    C_val_to_return = C_val_to_return.at[1, 0].set(C1)
+    C_val_to_return = C_val_to_return.at[2, 0].set(C2)
+    jax.debug.print("C_val: {}", C_val_to_return)
+    Ucom = U_si
+    K = (U_ci**2 / (Ucom**2)) * (2 * C_val + (U_si**2) / (U_ci**2) - 1)
+
+    # jax.debug.print("K,Ucom from diverging flow case 0 {} {}", K, Ucom)
+
+    return Ucom.reshape(1, 1), K
+
+
+def diverging_flow_case_1(
+    U: jnp.ndarray,
+    A: jnp.ndarray,
+    theta: jnp.ndarray,
+    Q: jnp.ndarray,
+):
+    """
+    Diverging flow case 1: [- - +]
+    Branch 2 is the supplier, branches 0 and 1 are collectors
+    """
+    # jax.debug.print("Q  {}", Q)
+    # jax.debug.print("from diverging flow case 1")
+    # Define index arrays
+    si_array = jnp.array([2])
+    ci_array = jnp.array([0, 1])
+
+    # Use advanced indexing for all slices
+    Q_si = Q[si_array, :]
+    Q_ci = Q[ci_array, :]
+    U_si = U[si_array, :]
+    U_ci = U[ci_array, :]
+
+    # Get total flow rate and flow ratio
+    Qtot = jnp.sum(Q[si_array, :])
+    FlowRatio = -Q_ci / Qtot
+
+    # Get datum angle
+    theta_si = theta[si_array, :]
+    theta_ci = theta[ci_array, :]
+
+    # Reorient all branch angles so average collector angle is 0
+    PseudoColAngle = jnp.mean(theta_ci)
+    sin_weighted = jnp.sum(jnp.sin(theta_si) * Q_si)
+    cos_weighted = jnp.sum(jnp.cos(theta_si) * Q_si)
+    PseudoSupAngle = jnp.arctan2(sin_weighted, cos_weighted)
+    PseudoColAngle = jax.lax.cond(
+        jnp.abs(PseudoSupAngle - PseudoColAngle) < 0.5 * jnp.pi,
+        lambda x: x + jnp.pi,
+        lambda x: x,
+        PseudoColAngle,
+    )
+    theta = wrapTopi(theta - PseudoColAngle)
+
+    # Use advanced indexing
+    theta_si = theta[si_array, :]
+    theta_ci = theta[ci_array, :]
+
+    # Calculate pseudosupplier angle
+    pseudodirection = jnp.sign(jnp.mean(jnp.sin(theta_si) * Q_si))
+    theta = jax.lax.cond(pseudodirection < 0, lambda x: -x, lambda x: x, theta)
+
+    # Again use advanced indexing
+    theta_si = theta[si_array, :]
+    theta_ci = theta[ci_array, :]
+
+    sin_weighted_abs = jnp.sum(jnp.sin(jnp.abs(theta_si)) * Q_si)
+    cos_weighted_abs = jnp.sum(jnp.cos(jnp.abs(theta_si)) * Q_si)
+    PseudoSupAngle = jnp.arctan2(sin_weighted_abs, cos_weighted_abs)
+
+    # Calculate effective pseudo supplier area
+    etransferfactor = (0.8 * (jnp.pi - PseudoSupAngle) * jnp.sign(theta_ci) - 0.2) * (
+        1 - FlowRatio
+    )
+    U_Q_weighted = jnp.sum(U_si * Q_si) / Qtot
+    TotPseudoArea = Qtot / ((1 - etransferfactor) * U_Q_weighted)
+
+    # Use advanced indexing
+    A_ci = A[ci_array, :]
+
+    AreaRatio = TotPseudoArea / (A_ci)
+    theta = wrapTo2pi(PseudoSupAngle - theta_ci)
+    phi = theta
+    C_val = (1 - jnp.exp(-FlowRatio / 0.02)) * (
+        1 - (1.0 / (AreaRatio * FlowRatio)) * jnp.cos(0.75 * (jnp.pi - phi))
+    )
+    Ucom = U_si
+
+    K = (U_ci**2 / (Ucom**2)) * (2 * C_val + (U_si**2) / (U_ci**2) - 1)
+
+    return Ucom.reshape(1, 1), K
+
+
+def diverging_flow_case_2(
+    U: jnp.ndarray,
+    A: jnp.ndarray,
+    theta: jnp.ndarray,
+    Q: jnp.ndarray,
+):
+    """
+    Diverging flow case 2: [- + -]
+    Branch 1 is the supplier, branches 0 and 2 are collectors
+    """
+
+    # Define index arrays
+    si_array = jnp.array([1])
+    ci_array = jnp.array([0, 2])
+
+    # Use advanced indexing for all slices
+    Q_si = Q[si_array, :]
+    Q_ci = Q[ci_array, :]
+    U_si = U[si_array, :]
+    U_ci = U[ci_array, :]
+
+    # Get total flow rate and flow ratio
+    Qtot = jnp.sum(Q[si_array, :])
+    FlowRatio = -Q_ci / Qtot
+
+    # Get datum angle
+    theta_si = theta[si_array, :]
+    theta_ci = theta[ci_array, :]
+
+    # Reorient all branch angles so average collector angle is 0
+    PseudoColAngle = jnp.mean(theta_ci)
+    sin_weighted = jnp.sum(jnp.sin(theta_si) * Q_si)
+    cos_weighted = jnp.sum(jnp.cos(theta_si) * Q_si)
+    PseudoSupAngle = jnp.arctan2(sin_weighted, cos_weighted)
+    PseudoColAngle = jax.lax.cond(
+        jnp.abs(PseudoSupAngle - PseudoColAngle) < 0.5 * jnp.pi,
+        lambda x: x + jnp.pi,
+        lambda x: x,
+        PseudoColAngle,
+    )
+    theta = wrapTopi(theta - PseudoColAngle)
+
+    # Use advanced indexing
+    theta_si = theta[si_array, :]
+    theta_ci = theta[ci_array, :]
+
+    # Calculate pseudosupplier angle
+    pseudodirection = jnp.sign(jnp.mean(jnp.sin(theta_si) * Q_si))
+    theta = jax.lax.cond(pseudodirection < 0, lambda x: -x, lambda x: x, theta)
+
+    # Again use advanced indexing
+    theta_si = theta[si_array, :]
+    theta_ci = theta[ci_array, :]
+
+    sin_weighted_abs = jnp.sum(jnp.sin(jnp.abs(theta_si)) * Q_si)
+    cos_weighted_abs = jnp.sum(jnp.cos(jnp.abs(theta_si)) * Q_si)
+    PseudoSupAngle = jnp.arctan2(sin_weighted_abs, cos_weighted_abs)
+
+    # Calculate effective pseudo supplier area
+    etransferfactor = (0.8 * (jnp.pi - PseudoSupAngle) * jnp.sign(theta_ci) - 0.2) * (
+        1 - FlowRatio
+    )
+    U_Q_weighted = jnp.sum(U_si * Q_si) / Qtot
+    TotPseudoArea = Qtot / ((1 - etransferfactor) * U_Q_weighted)
+
+    # Use advanced indexing
+    A_ci = A[ci_array, :]
+
+    AreaRatio = TotPseudoArea / (A_ci)
+    theta = wrapTo2pi(PseudoSupAngle - theta_ci)
+    phi = theta
+    C_val = (1 - jnp.exp(-FlowRatio / 0.02)) * (
+        1 - (1.0 / (AreaRatio * FlowRatio)) * jnp.cos(0.75 * (jnp.pi - phi))
+    )
+    Ucom = U_si
+
+    K = (U_ci**2 / (Ucom**2)) * (2 * C_val + (U_si**2) / (U_ci**2) - 1)
+
+    return Ucom.reshape(1, 1), K
+
+
+def converging_flow_case_0(
+    U: jnp.ndarray, A: jnp.ndarray, theta: jnp.ndarray, Q: jnp.ndarray
+):
+    # jax.debug.print("from converging flow case 0")
+    si_array = jnp.array([1, 2])
+    ci_array = jnp.array([0])
+    Q_si = Q[si_array, :]
+    Q_ci = Q[ci_array, :]
+    U_si = U[si_array, :]
+    U_ci = U[ci_array, :]
+    Qtot = jnp.sum(Q[si_array, :])
+    FlowRatio = -Q_ci / Qtot
+    theta_si = theta[si_array, :]
+    theta_ci = theta[ci_array, :]
+    PseudoColAngle = jnp.mean(theta_ci)
+    sin_weighted = jnp.sum(jnp.sin(theta_si) * Q_si)
+    cos_weighted = jnp.sum(jnp.cos(theta_si) * Q_si)
+    PseudoSupAngle = jnp.arctan2(sin_weighted, cos_weighted)
+    PseudoColAngle = jax.lax.cond(
+        jnp.abs(PseudoSupAngle - PseudoColAngle) < 0.5 * jnp.pi,
+        lambda x: x + jnp.pi,
+        lambda x: x,
+        PseudoColAngle,
+    )
+    theta = wrapTopi(theta - PseudoColAngle)
+    theta_si = theta[si_array, :]
+    theta_ci = theta[ci_array, :]
+    pseudodirection = jnp.sign(jnp.mean(jnp.sin(theta_si) * Q_si))
+    theta = jax.lax.cond(pseudodirection < 0, lambda x: -x, lambda x: x, theta)
+    theta_si = theta[si_array, :]
+    theta_ci = theta[ci_array, :]
+    sin_weighted_abs = jnp.sum(jnp.sin(jnp.abs(theta_si)) * Q_si)
+    cos_weighted_abs = jnp.sum(jnp.cos(jnp.abs(theta_si)) * Q_si)
+    PseudoSupAngle = jnp.arctan2(sin_weighted_abs, cos_weighted_abs)
+    etransferfactor = (0.8 * (jnp.pi - PseudoSupAngle) * jnp.sign(theta_ci) - 0.2) * (
+        1 - FlowRatio
+    )
+    U_Q_weighted = jnp.sum(U_si * Q_si) / Qtot
+    TotPseudoArea = Qtot / ((1 - etransferfactor) * U_Q_weighted)
+    A_ci = A[ci_array, :]
+    AreaRatio = TotPseudoArea / (A_ci)
+    theta = wrapTo2pi(PseudoSupAngle - theta_ci)
+    phi = theta
+    C_val = (1 - jnp.exp(-FlowRatio / 0.02)) * (
+        1 - (1.0 / (AreaRatio * FlowRatio)) * jnp.cos(0.75 * (jnp.pi - phi))
+    )
+    jax.debug.print("C_val: {}", C_val.shape)
+    Ucom = U_ci
+    K = (U_si**2 / (Ucom**2)) * (2 * C_val + (U_ci**2) / (U_si**2) - 1)
+    # jax.debug.print("K,Ucom from converging flow case 0 {} {}", K, Ucom)
+    return Ucom.reshape(1, 1), K
+
+
+def converging_flow_case_1(
+    U: jnp.ndarray, A: jnp.ndarray, theta: jnp.ndarray, Q: jnp.ndarray
+):
+    # jax.debug.print("from converging flow case 1")
+    si_array = jnp.array([0, 2])
+    ci_array = jnp.array([1])
+    Q_si = Q[si_array, :]
+    Q_ci = Q[ci_array, :]
+    U_si = U[si_array, :]
+    U_ci = U[ci_array, :]
+    Qtot = jnp.sum(Q[si_array, :])
+    FlowRatio = -Q_ci / Qtot
+    theta_si = theta[si_array, :]
+    theta_ci = theta[ci_array, :]
+    PseudoColAngle = jnp.mean(theta_ci)
+    sin_weighted = jnp.sum(jnp.sin(theta_si) * Q_si)
+    cos_weighted = jnp.sum(jnp.cos(theta_si) * Q_si)
+    PseudoSupAngle = jnp.arctan2(sin_weighted, cos_weighted)
+    PseudoColAngle = jax.lax.cond(
+        jnp.abs(PseudoSupAngle - PseudoColAngle) < 0.5 * jnp.pi,
+        lambda x: x + jnp.pi,
+        lambda x: x,
+        PseudoColAngle,
+    )
+    theta = wrapTopi(theta - PseudoColAngle)
+    theta_si = theta[si_array, :]
+    theta_ci = theta[ci_array, :]
+    pseudodirection = jnp.sign(jnp.mean(jnp.sin(theta_si) * Q_si))
+    theta = jax.lax.cond(pseudodirection < 0, lambda x: -x, lambda x: x, theta)
+    theta_si = theta[si_array, :]
+    theta_ci = theta[ci_array, :]
+    sin_weighted_abs = jnp.sum(jnp.sin(jnp.abs(theta_si)) * Q_si)
+    cos_weighted_abs = jnp.sum(jnp.cos(jnp.abs(theta_si)) * Q_si)
+    PseudoSupAngle = jnp.arctan2(sin_weighted_abs, cos_weighted_abs)
+    etransferfactor = (0.8 * (jnp.pi - PseudoSupAngle) * jnp.sign(theta_ci) - 0.2) * (
+        1 - FlowRatio
+    )
+    U_Q_weighted = jnp.sum(U_si * Q_si) / Qtot
+    TotPseudoArea = Qtot / ((1 - etransferfactor) * U_Q_weighted)
+    A_ci = A[ci_array, :]
+    AreaRatio = TotPseudoArea / (A_ci)
+    theta = wrapTo2pi(PseudoSupAngle - theta_ci)
+    phi = theta
+    C_val = (1 - jnp.exp(-FlowRatio / 0.02)) * (
+        1 - (1.0 / (AreaRatio * FlowRatio)) * jnp.cos(0.75 * (jnp.pi - phi))
+    )
+    Ucom = U_ci
+    K = (U_si**2 / (Ucom**2)) * (2 * C_val + (U_ci**2) / (U_si**2) - 1)
+    return Ucom.reshape(1, 1), K
+
+
+def converging_flow_case_2(
+    U: jnp.ndarray, A: jnp.ndarray, theta: jnp.ndarray, Q: jnp.ndarray
+):
+    # jax.debug.print("U  {}", Q)
+    # jax.debug.print("from converging flow case 2")
+    si_array = jnp.array([0, 1])
+    ci_array = jnp.array([2])
+    Q_si = Q[si_array, :]
+    Q_ci = Q[ci_array, :]
+    U_si = U[si_array, :]
+    U_ci = U[ci_array, :]
+    Qtot = jnp.sum(Q[si_array, :])
+    FlowRatio = -Q_ci / Qtot
+    theta_si = theta[si_array, :]
+    theta_ci = theta[ci_array, :]
+    PseudoColAngle = jnp.mean(theta_ci)
+    sin_weighted = jnp.sum(jnp.sin(theta_si) * Q_si)
+    cos_weighted = jnp.sum(jnp.cos(theta_si) * Q_si)
+    PseudoSupAngle = jnp.arctan2(sin_weighted, cos_weighted)
+    PseudoColAngle = jax.lax.cond(
+        jnp.abs(PseudoSupAngle - PseudoColAngle) < 0.5 * jnp.pi,
+        lambda x: x + jnp.pi,
+        lambda x: x,
+        PseudoColAngle,
+    )
+    theta = wrapTopi(theta - PseudoColAngle)
+    theta_si = theta[si_array, :]
+    theta_ci = theta[ci_array, :]
+    pseudodirection = jnp.sign(jnp.mean(jnp.sin(theta_si) * Q_si))
+    theta = jax.lax.cond(pseudodirection < 0, lambda x: -x, lambda x: x, theta)
+    theta_si = theta[si_array, :]
+    theta_ci = theta[ci_array, :]
+    sin_weighted_abs = jnp.sum(jnp.sin(jnp.abs(theta_si)) * Q_si)
+    cos_weighted_abs = jnp.sum(jnp.cos(jnp.abs(theta_si)) * Q_si)
+    PseudoSupAngle = jnp.arctan2(sin_weighted_abs, cos_weighted_abs)
+    etransferfactor = (0.8 * (jnp.pi - PseudoSupAngle) * jnp.sign(theta_ci) - 0.2) * (
+        1 - FlowRatio
+    )
+    U_Q_weighted = jnp.sum(U_si * Q_si) / Qtot
+    TotPseudoArea = Qtot / ((1 - etransferfactor) * U_Q_weighted)
+    A_ci = A[ci_array, :]
+    AreaRatio = TotPseudoArea / (A_ci)
+    theta = wrapTo2pi(PseudoSupAngle - theta_ci)
+    phi = theta
+    C_val = (1 - jnp.exp(-FlowRatio / 0.02)) * (
+        1 - (1.0 / (AreaRatio * FlowRatio)) * jnp.cos(0.75 * (jnp.pi - phi))
+    )
+    Ucom = U_ci
+    K = (U_si**2 / (Ucom**2)) * (2 * C_val + (U_ci**2) / (U_si**2) - 1)
+    return Ucom.reshape(1, 1), K
+
+
+def zero_flow_case(U: jnp.ndarray, A: jnp.ndarray, theta: jnp.ndarray, Q: jnp.ndarray):
+    # jax.debug.print("from zero flow case")
+    dummy_Ucom = jnp.zeros((1, 1))
+    dummy_K = jnp.zeros((2, 1))
+    return dummy_Ucom, dummy_K
 
 
 @jax.jit
 def junction_loss_coefficient(U: jnp.ndarray, A: jnp.ndarray, theta: jnp.ndarray):
-    """
-    Function to compute junction loss at a three way junction.
-    Converging/Diverging flow depends on network and topology
-
-    Args:
-        U : Flow rate at the three nodes that make the junction.
-        A : Cross sectional areas of junction segments
-        theta : The angle the daughter segments make with the supplier segment.
-    Returns:
-        Ucom,K
-    """
-    xwrap = jnp.remainder(theta, 2 * jnp.pi)
-    mask = jnp.abs(xwrap) > jnp.pi
-    correction = 2 * jnp.pi * jnp.sign(xwrap)
-    xwrap = jnp.where(mask, xwrap - correction, xwrap)
-    theta = xwrap
-
-    # jax.debug.print("printing out U {}", U)
-
-    # zero flow rate at node
-    def zero_flow_case(U, A, theta):
-        return jnp.array([[0.0]]), jnp.zeros((2, 1), float)
-
-    # single inlet into two outlets
-    def converging_flow(
-        U: jnp.ndarray, A: jnp.ndarray, theta: jnp.ndarray, Q: jnp.ndarray
-    ):
-        # get supplier and collector segments from the function args
-        Q_si = Q[0:2,]
-        Q_ci = Q[2:3,]
-        U_si = U[0:2,]
-        U_ci = U[2:3,]
-        # get total flow rate and flow ratio
-        Qtot = jnp.sum(Q[0:2,])
-        FlowRatio = -Q_ci / Qtot
-
-        # get datum angle
-        theta_si = theta[0:2,]
-        theta_ci = theta[2:3,]
-        # Reorient all branch angles so average collector angle is 0
-        PseudoColAngle = jnp.mean(theta_ci)
-        sin_weighted = jnp.sum(jnp.sin(theta_si) * Q_si)
-        cos_weighted = jnp.sum(jnp.cos(theta_si) * Q_si)
-        PseudoSupAngle = jnp.arctan2(sin_weighted, cos_weighted)
-        PseudoColAngle = jax.lax.cond(
-            jnp.abs(PseudoSupAngle - PseudoColAngle) < 0.5 * jnp.pi,
-            lambda x: x + jnp.pi,
-            lambda x: x,
-            PseudoColAngle,
-        )
-        theta = wrapTopi(theta - PseudoColAngle)
-        theta_si = theta[0:2,]
-        theta_ci = theta[2:3,]
-        # calculate pseudosupplier angle
-        pseudodirection = jnp.sign(jnp.mean(jnp.sin(theta_si) * Q_si))
-        theta = jax.lax.cond(pseudodirection < 0, lambda x: -x, lambda x: x, theta)
-        theta_si = theta[0:2,]
-        theta_ci = theta[2:3,]
-
-        sin_weighted_abs = jnp.sum(jnp.sin(jnp.abs(theta_si)) * Q_si)
-        cos_weighted_abs = jnp.sum(jnp.cos(jnp.abs(theta_si)) * Q_si)
-        PseudoSupAngle = jnp.arctan2(sin_weighted_abs, cos_weighted_abs)
-
-        # calculate effective pseduo supplier area
-        etransferfactor = (
-            0.8 * (jnp.pi - PseudoSupAngle) * jnp.sign(theta_ci) - 0.2
-        ) * (1 - FlowRatio)
-        U_Q_weighted = jnp.sum(U_si * Q_si) / Qtot
-        TotPseudoArea = Qtot / ((1 - etransferfactor) * U_Q_weighted)
-        A_ci = A[2:3,]
-        AreaRatio = TotPseudoArea / (A_ci)
-        theta = wrapTo2pi(PseudoSupAngle - theta_ci)
-        phi = theta
-
-        C_val = (1 - jnp.exp(-FlowRatio / 0.02)) * (
-            1 - (1.0 / (AreaRatio * FlowRatio)) * jnp.cos(0.75 * (jnp.pi - phi))
-        )
-        Ucom = U_ci
-        K = (U_ci**2 / (Ucom**2)) * (2 * C_val + (U_si**2) / (U_ci**2) - 1)
-
-        # jax.debug.print(
-        #     "printing out K from converging func \n\n{} \n\n{} \n\n {}\n",
-        #     Ucom,
-        #     C_val,
-        #     K,
-        # )
-
-        # jax.debug.print("printing K shape {}", K.shape)
-
-        return Ucom.reshape(1, 1), K
-
-    # single inlet into two outlets
-    def diverging_flow(
-        U: jnp.ndarray,
-        A: jnp.ndarray,
-        theta: jnp.ndarray,
-        Q: jnp.ndarray,
-    ):
-        # jax.debug.print("printing out theta before function starts {}", theta)
-        # jax.debug.print("printing out U before function starts {}", U)
-        # jax.debug.print("printing out A before function starts {}", A)
-
-        # get supplier and collector segments from the function args
-        Q_si = Q[0:1,]
-        Q_ci = Q[1:3,]
-        U_si = U[0:1,]
-        U_ci = U[1:3,]
-        # get total flow rate and flow ratio
-        Qtot = jnp.sum(Q[0:1,])
-        FlowRatio = -Q_ci / Qtot
-
-        # get datum angle
-        theta_si = theta[0:1,]
-        theta_ci = theta[1:3,]
-        # Reorient all branch angles so average collector angle is 0
-        PseudoColAngle = jnp.mean(theta_ci)
-        sin_weighted = jnp.sum(jnp.sin(theta_si) * Q_si)
-        cos_weighted = jnp.sum(jnp.cos(theta_si) * Q_si)
-        PseudoSupAngle = jnp.arctan2(sin_weighted, cos_weighted)
-        PseudoColAngle = jax.lax.cond(
-            jnp.abs(PseudoSupAngle - PseudoColAngle) < 0.5 * jnp.pi,
-            lambda x: x + jnp.pi,
-            lambda x: x,
-            PseudoColAngle,
-        )
-        theta = wrapTopi(theta - PseudoColAngle)
-        theta_si = theta[0:1,]
-        theta_ci = theta[1:3,]
-        # calculate pseudosupplier angle
-        pseudodirection = jnp.sign(jnp.mean(jnp.sin(theta_si) * Q_si))
-        theta = jax.lax.cond(pseudodirection < 0, lambda x: -x, lambda x: x, theta)
-        theta_si = theta[0:1,]
-        theta_ci = theta[1:3,]
-
-        sin_weighted_abs = jnp.sum(jnp.sin(jnp.abs(theta_si)) * Q_si)
-        cos_weighted_abs = jnp.sum(jnp.cos(jnp.abs(theta_si)) * Q_si)
-        PseudoSupAngle = jnp.arctan2(sin_weighted_abs, cos_weighted_abs)
-
-        # calculate effective pseduo supplier area
-        etransferfactor = (
-            0.8 * (jnp.pi - PseudoSupAngle) * jnp.sign(theta_ci) - 0.2
-        ) * (1 - FlowRatio)
-        U_Q_weighted = jnp.sum(U_si * Q_si) / Qtot
-        TotPseudoArea = Qtot / ((1 - etransferfactor) * U_Q_weighted)
-        A_ci = A[1:3,]
-        AreaRatio = TotPseudoArea / (A_ci)
-        theta = wrapTo2pi(PseudoSupAngle - theta_ci)
-        phi = theta
-
-        C_val = (1 - jnp.exp(-FlowRatio / 0.02)) * (
-            1 - (1.0 / (AreaRatio * FlowRatio)) * jnp.cos(0.75 * (jnp.pi - phi))
-        )
-        Ucom = U_si
-        K = (U_ci**2 / (Ucom**2)) * (2 * C_val + (U_si**2) / (U_ci**2) - 1)
-
-        # jax.debug.print(
-        #     "printing out K from diverging func \n\n{} \n\n{} \n\n {}\n",
-        #     Ucom,
-        #     C_val,
-        #     K,
-        # )
-
-        # jax.debug.print("printing K shape {}", K.shape)
-
-        return Ucom.reshape(1, 1), K
-
     Q = U * A
-    Si = Q >= 0.0
-    is_zero_flow = jnp.all(jnp.abs(Q) < 1e-7)
-    is_converging = jnp.sum(Si) > 1
-    return jax.lax.cond(
-        is_zero_flow,
-        lambda: zero_flow_case(U, A, theta),
-        lambda: jax.lax.cond(
-            is_converging,
-            lambda: converging_flow(U, A, theta, Q),
-            lambda: diverging_flow(U, A, theta, Q),
-        ),
+    is_zero_flow = jnp.any(jnp.abs(Q) < 1e-7)
+
+    # diverging flows
+    is_diverging_0 = jnp.all((Q[0] > 0) & (Q[1] < 0) & (Q[2] < 0))  # [+ - -]
+    is_diverging_1 = jnp.all((Q[0] < 0) & (Q[1] < 0) & (Q[2] > 0))  # [- - +]
+    is_diverging_2 = jnp.all((Q[0] < 0) & (Q[1] > 0) & (Q[2] < 0))  # [- + -]
+
+    # converging flow
+    is_converging_0 = jnp.all((Q[0] < 0) & (Q[1] > 0) & (Q[2] > 0))  # [- + +]
+    is_converging_1 = jnp.all((Q[0] > 0) & (Q[1] > 0) & (Q[2] < 0))  # [+ + -]
+    is_converging_2 = jnp.all((Q[0] > 0) & (Q[1] < 0) & (Q[2] > 0))  # [+ - +]
+
+    case_index = is_zero_flow * 6 + (1 - is_zero_flow) * (
+        is_diverging_0 * 0
+        + is_diverging_1 * 1
+        + is_diverging_2 * 2
+        + is_converging_0 * 3
+        + is_converging_1 * 4
+        + is_converging_2 * 5
+        + (
+            1
+            - (
+                is_diverging_0
+                | is_diverging_1
+                | is_diverging_2
+                | is_converging_0
+                | is_converging_1
+                | is_converging_2
+            )
+        )
+        * 6
     )
 
-
-@jax.jit
-def update_junction_loss_scan_fn(carry, input):
-    """
-    Updates resistance of daughter vessels associated with a junction. Scanned over stacked arrays of junction parameters
-    """
-    F, X = carry
-    (
-        junction_vessel_resistance_index_list,
-        junction_nodes_list,
-        theta,
-        A,
-        is_converging,
-    ) = input
-
-    flow_rate_index_list = 2 * junction_nodes_list + 1
-
-    Q = X[flow_rate_index_list]
-    U = Q / A
-    # jax.debug.print("printing out flow-rate {}", U)
-    # handle converging or diverging case
-    U = jax.lax.cond(
-        is_converging, lambda U: U.at[2:].set(-U[2:]), lambda U: U.at[1:].set(-U[1:]), U
+    return jax.lax.switch(
+        case_index,
+        [
+            lambda args: diverging_flow_case_0(*args),  # Case 0
+            lambda args: diverging_flow_case_1(*args),  # Case 1
+            lambda args: diverging_flow_case_2(*args),  # Case 2
+            lambda args: converging_flow_case_0(*args),  # Case 3
+            lambda args: converging_flow_case_1(*args),  # Case 4
+            lambda args: converging_flow_case_2(*args),  # Case 5
+            lambda args: zero_flow_case(*args),  # Case 6 - Zero flow
+        ],
+        (U, A, theta, Q),
     )
-
-    # call the junction loss function for the current junction parameters
-    Ucom, K = junction_loss_coefficient(U, A, theta)
-
-    # NOTE: different vals to add based on diverging and converging,note the indexing of K
-    val_to_add = jax.lax.cond(
-        is_converging,
-        # for convering case
-        lambda _: jnp.array(
-            [
-                -0,  # parent vessel
-                -0,  # parent vessel
-                -0.5 * RHO * Ucom[0, 0] * Ucom[0, 0] * jnp.abs(K[0, 0]),
-            ],
-            float,
-        ).reshape(3, 1),
-        # for diverging case
-        lambda _: jnp.array(
-            [
-                -0,  # parent vessel
-                -0.5 * RHO * Ucom[0, 0] * Ucom[0, 0] * jnp.abs(K[0, 0]),
-                -0.5 * RHO * Ucom[0, 0] * Ucom[0, 0] * jnp.abs(K[1, 0]),
-            ],
-            float,
-        ).reshape(3, 1),
-        None,
-    )
-
-    # handle division by zero incase flow is stagnant
-    val_to_add = jnp.divide(val_to_add, (Q + 1e-10)).reshape(
-        3,
-    )
-
-    # extract the rows and cols for resistance update in F
-    rows, cols = (
-        junction_vessel_resistance_index_list[:, 0],
-        junction_vessel_resistance_index_list[:, 1],
-    )
-    # jax.debug.print(
-    #     "printing out rows and cols for vessels attached to junction\n {},{},{}\n",
-    #     rows,
-    #     cols,
-    #     is_converging,
-    # )
-    # finally update F with the junction loss, vectorized operation.
-    # jax.debug.print(" \n\nprinting out val_to_add \n\n{}", F[rows, cols])
-    F = F.at[rows, cols].set(val_to_add * 1)
-
-    # add dynamic pressure equation, hard coding the values here, if increases stability
-    # will implement a better way to make it more general.
-
-    # jax.debug.print("printing from junction scan func")
-    return (F, X), None
-
-
-@jax.jit
-def update_all_junctions(
-    F: jnp.ndarray,  # global matrix for steady state system
-    X: jnp.ndarray,  # current solution for steady state system
-    junction_vessel_resistance_index_list_stack: jnp.ndarray,  # all the daughter resistance indices stacked for each junction
-    junction_nodes_list_stack: jnp.ndarray,  # junction nodes for each junction stacked along primary axis
-    theta_stack: jnp.ndarray,  # angles associated with all junctions stacked along primary axis
-    A_stack: jnp.ndarray,  # cross section areas associated with all junctions stacked along primary axis
-    is_converging_stack: jnp.ndarray,  # convering boolean flag stacked along primary axis for all junctions in network
-):
-    # this is the input for the function above, jax.lax.scan will iterate over dim 0 for all components of the
-    # scan input.
-    scan_inputs = (
-        junction_vessel_resistance_index_list_stack,
-        junction_nodes_list_stack,
-        theta_stack,
-        A_stack,
-        is_converging_stack,
-    )
-    (F_after_junction_update, _), _ = jax.lax.scan(
-        update_junction_loss_scan_fn, (F, X), scan_inputs
-    )
-
-    return F_after_junction_update

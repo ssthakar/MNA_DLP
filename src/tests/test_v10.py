@@ -1,13 +1,14 @@
 import os
 import jax
-import src.model.netlist_v7 as netlist
-import src.solver.sim_v3 as sim
+import src.model.netlist_v9 as netlist
+import src.solver.sim_v6 as sim
 from src.utils.fft import fft_data
 import time
 import jax.numpy as jnp
 import numpy as np
 import matplotlib.pyplot as plt
 import optax
+import shutil
 
 jax.config.update("jax_enable_x64", True)
 jax.config.update("jax_platform_name", "cpu")
@@ -16,6 +17,8 @@ jax.config.update("jax_platform_name", "cpu")
 RUN_INIT_SIM = True
 PLOT_INIT_SIM = True
 RUN_OPTIM = False
+SHOW_PARAMS = True
+
 start_time_total = time.time()
 # paths to data
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -23,6 +26,14 @@ data_file_path = os.path.join(current_dir, "data", "elements_v1.json")
 all_files_path = os.path.join(current_dir, "data", "all_files")
 output_path = "./output/"
 junction_data_path = os.path.join(current_dir, "data", "junctions_v1.json")
+
+# if os.path.exists(output_path):
+#     shutil.rmtree(output_path)
+# os.makedirs(output_path, exist_ok=True)
+# print(f"Cleaned and recreated output directory: {output_path}")
+
+# NOTE: this can be a function as well
+
 
 # NOTE: this can be a function as well
 # create netlist and supporting data structures
@@ -75,7 +86,7 @@ Qin[0 : int(T / dt + 1), 0] = Q_inll[:, 0]
 for i in range(0, np1):
     Qin[int(i * T / dt + 1) : int(i * T / dt + 1 + T / dt), 0] = Q_inll[1:, 0]
 Qin = jnp.array(Qin, float)
-Qin = Qin
+# Qin = Qin + 1e-3
 Qin = Qin.flatten()
 
 # Get initial matrices
@@ -87,13 +98,13 @@ np.savetxt(output_path + "/G_test_1.dat", G_test, fmt="%.4f")
 
 target = jnp.array([125584.0, 125584.0])  # Example target value
 
-optimizer = optax.adam(learning_rate=0.1)
+optimizer = optax.adam(learning_rate=0.01)
 params_in_phys_space = jnp.array([600, 0.0005, 29000, 600, 0.0005, 29000], float)
 
 param_scale = jnp.array([100, 0.0001, 10000, 100, 0.0001, 10000], float)
 params = params_in_phys_space / param_scale
 
-optim_ids = jnp.array([5, 9, 10, 8, 11, 12], int)
+optim_ids = jnp.array([7, 8, 9, 10, 11, 12], int)
 opt_state = optimizer.init(params)
 time_step = sim.create_time_step(size)
 
@@ -118,7 +129,8 @@ if RUN_INIT_SIM:
     jax.block_until_ready(tracked_data)
     sim_end_time = time.time()
     sim_time = sim_end_time - sim_start_time
-    np.savetxt(output_path + "tracked_data_K.dat", tracked_data, fmt="%.4f")
+    np.savetxt(output_path + "tracked_data_C.dat", tracked_data, fmt="%.4f")
+    np.savetxt(output_path + "target.dat", tracked_data, fmt="%.4f")
     if PLOT_INIT_SIM:
         plt.figure()
         plt.plot(tracked_data[:, 0] * 0.00075, "b-", label="P1 (mmHg)")
@@ -126,7 +138,7 @@ if RUN_INIT_SIM:
         plt.grid()
         plt.show()
     print(f"Initial Simulation completed in {sim_time:.3f} seconds.\n")
-# breakpoint()
+
 
 # create simulation function object with initial parameters
 sim_with_initial_params = sim.create_cardiac_simulation_with_params(
@@ -139,18 +151,28 @@ np.savetxt(
     fmt="%.8f",
 )
 
+target = np.loadtxt("./target.dat", dtype=float)
+target = jnp.array(target, float)
+print(target.shape)
+plt.plot(target[:, 0])
+plt.show()
+plt.close()
+# breakpoint()
+
 max_optim_iter = 10000
 print_per_iter = 10
-simulate_per_iter = 50
+simulate_per_iter = 10
 
+loss_fn = sim.create_compute_loss(size, n_nodes, T, np1, dt, optim_ids)
 if RUN_OPTIM:
     i = 0
     loss = netlist.LARGE_NUMBER
     start_time = time.time()
-    loss_fn = sim.create_compute_loss(size, n_nodes, T, np1, dt, optim_ids)
     print(f"Target Values: P_avg: {94:.3f}, P_max: {126}, P_min: {72}\n")
     print("********** Starting optimization **********")
-    while i < max_optim_iter or loss > 1e-3:
+
+    # Continue until either max iterations reached or loss threshold met
+    while i < max_optim_iter and loss > 1e-3:
         loss, grads = jax.value_and_grad(loss_fn)(params, target, init_carry, Qin)
         updates, opt_state = optimizer.update(grads, opt_state, params)
         params = optax.apply_updates(params, updates)
@@ -159,7 +181,6 @@ if RUN_OPTIM:
         end_time = time.time()
 
         if i % print_per_iter == 0:
-            # start_time = time.time()
             if i == 0:
                 print(
                     f"itr# : {i}, Loss: {loss:.5f}, Time: {(end_time - start_time):.2f}, norm_grads: {jnp.linalg.norm(grads):.3f}, params norm: {jnp.linalg.norm(params * param_scale):.3f}"
@@ -168,10 +189,9 @@ if RUN_OPTIM:
                 print(
                     f"itr# : {i}, Loss: {loss:.5f}, Time: {(end_time - start_time) / print_per_iter:.2f}, norm_grads: {jnp.linalg.norm(grads):.3f}, params norm: {jnp.linalg.norm(params * param_scale):.3f}"
                 )
-
             start_time = time.time()
 
-        if i % simulate_per_iter == 0 and i > 0 and loss > 1e-3:
+        if i % simulate_per_iter == 0 and i > 0:
             print(f"Simulation at iter: {i}")
             sim_start_time = time.time()
             sim_with_current_params = sim.create_cardiac_simulation_with_params(
@@ -185,8 +205,8 @@ if RUN_OPTIM:
                 dt,
                 optim_ids,
             )
-            tracked_data = sim_with_current_params()
-            jax.block_until_ready(tracked_data)
+            tracked_data_curr = sim_with_current_params()
+            jax.block_until_ready(tracked_data_curr)
             sim_end_time = time.time()
             sim_time = sim_end_time - sim_start_time
             params_in_phys_space = params * param_scale
@@ -195,29 +215,92 @@ if RUN_OPTIM:
                 params_in_phys_space,
                 fmt="%.9f",
             )
-            p1_avg = jnp.mean(tracked_data[:, 0]) * 0.00075
-            p1_max = jnp.max(tracked_data[:, 0]) * 0.00075
-            p1_min = jnp.min(tracked_data[:, 0]) * 0.00075
-            q1_avg = jnp.mean(tracked_data[:, 3])
-            q2_avg = jnp.mean(tracked_data[:, 4])
+            if SHOW_PARAMS:
+                print(f"params at iter {i}: {params_in_phys_space}")
+            p1_avg = jnp.mean(tracked_data_curr[:, 0]) * 0.00075
+            p1_max = jnp.max(tracked_data_curr[:, 0]) * 0.00075
+            p1_min = jnp.min(tracked_data_curr[:, 0]) * 0.00075
+            q1_avg = jnp.mean(tracked_data_curr[:, 3])
+            q2_avg = jnp.mean(tracked_data_curr[:, 4])
             plt.figure()
-            plt.plot(tracked_data[:, 0] * 0.00075, "b-", label="P1_curr (mmHg)")
+            plt.plot(tracked_data_curr[:, 0] * 0.00075, "b-", label="Pin (curr) (mmHg)")
             plt.plot(
-                tracked_data_with_initial_params[:, 0] * 0.00075,
+                target[:, 0] * 0.00075,
                 "r-",
-                label="P1_init (mmHg)",
+                label="Pin (target) (mmHg)",
             )
             plt.legend()
             plt.grid()
             plt.savefig(output_path + f"p1_iter_{i}.png")
-            target = jnp.array([p1_avg, p1_max, p1_min, q1_avg, q2_avg])
+            target_to_plot = jnp.array([p1_avg, p1_max, p1_min, q1_avg, q2_avg])
             np.savetxt(
-                output_path + f"tracked_data_iter_{i}_sim.dat", tracked_data, fmt="%.4f"
+                output_path + f"tracked_data_iter_{i}_sim.dat",
+                tracked_data_curr,
+                fmt="%.4f",
             )
-            np.savetxt(output_path + f"target_iter_{i}.dat", target, fmt="%.4f")
+            np.savetxt(output_path + f"target_iter_{i}.dat", target_to_plot, fmt="%.4f")
             print(f"P_avg: {p1_avg:.3f}, P_max: {p1_max:.3f}, P_min: {p1_min:.3f}\n")
+
         i += 1
 
+    # Run final simulation and save optimized parameters
+    print(f"\n********** Optimization finished **********")
+    print(f"Stopped after {i} iterations with final loss: {loss:.5f}")
 
-end_time_total = time.time()
-print(f"Total time: {end_time_total - start_time_total:.3f} seconds.")
+    # Convert parameters to physical space
+    params_in_phys_space = params * param_scale
+
+    # Save optimized parameters
+    np.savetxt(
+        output_path + "final_optimized_params.dat",
+        params_in_phys_space,
+        fmt="%.9f",
+    )
+
+    # Print final optimized parameters
+    print("\nFinal optimized parameters:")
+    print(params_in_phys_space)
+
+    # Run final simulation with optimized parameters
+    print("\nRunning final simulation with optimized parameters...")
+    final_sim = sim.create_cardiac_simulation_with_params(
+        params_in_phys_space,
+        init_carry,
+        Qin,
+        size,
+        n_nodes,
+        T,
+        np1,
+        dt,
+        optim_ids,
+    )
+    final_tracked_data = final_sim()
+
+    # Calculate and print final metrics
+    p1_avg = jnp.mean(final_tracked_data[:, 0]) * 0.00075
+    p1_max = jnp.max(final_tracked_data[:, 0]) * 0.00075
+    p1_min = jnp.min(final_tracked_data[:, 0]) * 0.00075
+    q1_avg = jnp.mean(final_tracked_data[:, 3])
+    q2_avg = jnp.mean(final_tracked_data[:, 4])
+
+    print(
+        f"Final results - P_avg: {p1_avg:.3f}, P_max: {p1_max:.3f}, P_min: {p1_min:.3f}"
+    )
+
+    # Save final tracked data
+    np.savetxt(output_path + "final_tracked_data.dat", final_tracked_data, fmt="%.4f")
+
+    # Plot final results
+    plt.figure(figsize=(10, 6))
+    plt.plot(final_tracked_data[:, 0] * 0.00075, "b-", label="Final P1 (mmHg)")
+    plt.plot(
+        tracked_data_with_initial_params[:, 0] * 0.00075,
+        "r-",
+        label="Initial P1 (mmHg)",
+    )
+    plt.legend()
+    plt.grid()
+    plt.title("Initial vs Final Pressure")
+    plt.xlabel("Time Steps")
+    plt.ylabel("Pressure (mmHg)")
+    plt.savefig(output_path + "final_pressure_comparison.png")

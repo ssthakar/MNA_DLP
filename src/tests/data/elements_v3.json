@@ -1,0 +1,51 @@
+{
+  "elements": [
+    {"type": "Q", "value": 90.0, "node1": 0, "node2": 1, "name": "0", "c2_value": 0.1},
+    {"type": "Rl", "value": 4.7, "node1": 1, "node2": 2, "name": "1", "c2_value": 0.00004351},
+    {"type": "L", "value": 100, "node1": 2, "node2": 3, "name": "2", "c2_value": 0.1},
+    
+    {"type": "Rl", "value": 4.7, "node1": 3, "node2": 4, "name": "3", "c2_value": 0.06740},
+    {"type": "L", "value": 100, "node1": 4, "node2": 5, "name": "4", "c2_value": 0.1},
+    
+    {"type": "Rl", "value": 4.7, "node1": 3, "node2": 6, "name": "5", "c2_value": 0.00319},
+    {"type": "L", "value": 100, "node1": 6, "node2": 7, "name": "6", "c2_value": 0.1},
+    
+    {"type": "Rl", "value": 4.7, "node1": 5, "node2": 8, "name": "7", "c2_value": 0.00319},
+    {"type": "L", "value": 100, "node1": 8, "node2": 9, "name": "8", "c2_value": 0.1},
+    
+    {"type": "Rl", "value": 4.7, "node1": 5, "node2": 10, "name": "9", "c2_value": 0.00319},
+    {"type": "L", "value": 100, "node1": 10, "node2": 11, "name": "10", "c2_value": 0.1},
+    
+    {"type": "Rl", "value": 4.7, "node1": 7, "node2": 12, "name": "11", "c2_value": 0.00319},
+    {"type": "L", "value": 100, "node1": 12, "node2": 13, "name": "12", "c2_value": 0.1},
+    
+    {"type": "Rl", "value": 4.7, "node1": 7, "node2": 14, "name": "13", "c2_value": 0.00319},
+    {"type": "L", "value": 100, "node1": 14, "node2": 15, "name": "14", "c2_value": 0.1},
+    
+    {"type": "Rl", "value": 4.7, "node1": 11, "node2": 16, "name": "15", "c2_value": 0.00319},
+    {"type": "L", "value": 100, "node1": 16, "node2": 17, "name": "16", "c2_value": 0.1},
+    
+    {"type": "Rl", "value": 4.7, "node1": 11, "node2": 18, "name": "17", "c2_value": 0.00319},
+    {"type": "L", "value": 100, "node1": 18, "node2": 19, "name": "18", "c2_value": 0.1},
+    
+    {"type": "R", "value": 4.7, "node1": 9, "node2": 20, "name": "19", "c2_value": 0.1},
+    {"type": "C", "value": 470e-6, "node1": 20, "node2": 0, "name": "20", "c2_value": 0.1},
+    {"type": "R", "value": 4.7, "node1": 20, "node2": 0, "name": "21", "c2_value": 0.1},
+    
+    {"type": "R", "value": 4.7, "node1": 13, "node2": 21, "name": "22", "c2_value": 0.1},
+    {"type": "C", "value": 470e-6, "node1": 21, "node2": 0, "name": "23", "c2_value": 0.1},
+    {"type": "R", "value": 4.7, "node1": 21, "node2": 0, "name": "24", "c2_value": 0.1},
+    
+    {"type": "R", "value": 4.7, "node1": 15, "node2": 22, "name": "25", "c2_value": 0.1},
+    {"type": "C", "value": 470e-6, "node1": 22, "node2": 0, "name": "26", "c2_value": 0.1},
+    {"type": "R", "value": 4.7, "node1": 22, "node2": 0, "name": "27", "c2_value": 0.1},
+    
+    {"type": "R", "value": 4.7, "node1": 17, "node2": 23, "name": "28", "c2_value": 0.1},
+    {"type": "C", "value": 470e-6, "node1": 23, "node2": 0, "name": "29", "c2_value": 0.1},
+    {"type": "R", "value": 4.7, "node1": 23, "node2": 0, "name": "30", "c2_value": 0.1},
+    
+    {"type": "R", "value": 4.7, "node1": 19, "node2": 24, "name": "31", "c2_value": 0.1},
+    {"type": "C", "value": 470e-6, "node1": 24, "node2": 0, "name": "32", "c2_value": 0.1},
+    {"type": "R", "value": 4.7, "node1": 24, "node2": 0, "name": "33", "c2_value": 0.1}
+  ]
+}

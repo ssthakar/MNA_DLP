@@ -15,13 +15,13 @@ jax.config.update("jax_platform_name", "cpu")
 # FLAGS
 RUN_INIT_SIM = True
 PLOT_INIT_SIM = True
-RUN_OPTIM = False
+RUN_OPTIM = True
 SHOW_PARAMS = True
 
 start_time_total = time.time()
 # paths to data
 current_dir = os.path.dirname(os.path.abspath(__file__))
-data_file_path = os.path.join(current_dir, "data", "elements_v1.json")
+data_file_path = os.path.join(current_dir, "data", "elements_v2.json")
 all_files_path = os.path.join(current_dir, "data", "all_files")
 output_path = "./output/"
 junction_data_path = os.path.join(current_dir, "data", "junctions_v1.json")
@@ -95,7 +95,7 @@ params_in_phys_space = jnp.array([600, 0.0005, 29000, 600, 0.0005, 29000], float
 param_scale = jnp.array([100, 0.0001, 10000, 100, 0.0001, 10000], float)
 params = params_in_phys_space / param_scale
 
-optim_ids = jnp.array([5, 9, 10, 8, 11, 12], int)
+optim_ids = jnp.array([7, 8, 9, 10, 11, 12], int)
 opt_state = optimizer.init(params)
 time_step = sim.create_time_step(size)
 

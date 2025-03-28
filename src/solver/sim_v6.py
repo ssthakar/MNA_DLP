@@ -159,13 +159,17 @@ def create_compute_loss(size, n_nodes, T, np_1, dt, optim_idx):
         )
 
         tracked_data = cardiac_simulation()
+        tracked_data_scaled = tracked_data * 0.00075
+        target_scaled = target * 0.00075
+        # waveform_loss = jnp.mean((tracked_data[:, 0] - target[:, 0]) ** 2)
+        # waveform_loss = jnp.sum((tracked_data_scaled[:, 0] - target_scaled[:, 0]) ** 2)
         # jax.debug.print("tracked data {}", tracked_data)
         p1_avg = jnp.mean(tracked_data[:, 0]) * 0.00075
         p1_max = jnp.max(tracked_data[:, 0]) * 0.00075
         p1_min = jnp.min(tracked_data[:, 0]) * 0.00075
-        # jax.debug.print("p1_avg {}", p1_avg)
+        # # jax.debug.print("p1_avg {}", p1_avg)
         q1_avg = jnp.mean(tracked_data[:, 3])
-
+        #
         q2_avg = jnp.mean(tracked_data[:, 4])
         target_systolic = 126.0
         target_diastolic = 72.0
@@ -176,7 +180,9 @@ def create_compute_loss(size, n_nodes, T, np_1, dt, optim_idx):
         p1_dia = jnp.mean((p1_min - target_diastolic) ** 2)
         q_loss = jnp.mean((q1_avg - q2_avg) ** 2) * lagrangian_multiplier
         # jax.debug.print("p1_loss {} q_loss {}", p1_loss, q_loss)
-        loss = p1_loss + q_loss + p1_sys + p1_dia
+        # loss = p1_loss + q_loss + p1_sys + p1_dia
+        loss = p1_loss + p1_sys + p1_dia
+        # loss = waveform_loss + q_loss
         # loss = p1_loss + p2_loss
         return loss
 

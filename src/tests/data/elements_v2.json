@@ -1,12 +1,12 @@
 {
   "elements": [
     {"type": "Q", "value": 90.0, "node1": 0, "node2": 1, "name": "0", "c2_value": 0.1},
-    {"type": "Rl", "value": 1.95260, "node1": 1, "node2": 2, "name": "1", "c2_value": 0.00004351},
+    {"type": "Rl", "value": 1.96, "node1": 1, "node2": 2, "name": "1", "c2_value": 0.0000},
     {"type": "L", "value": 4.786898, "node1": 2, "node2": 3, "name": "2", "c2_value": 0.1},
-    {"type": "Rl", "value": 6.7056, "node1": 3, "node2": 4, "name": "3", "c2_value": 0.06740},
-    {"type": "L", "value": 8.18107856, "node1": 4, "node2": 5, "name": "4", "c2_value": 0.1},
-    {"type": "Rl", "value": 6.7056, "node1": 3, "node2": 7, "name": "6", "c2_value": 0.00319},
-    {"type": "L", "value": 8.17831721, "node1": 7, "node2": 8, "name": "7", "c2_value": 0.1},
+    {"type": "Rl", "value": 7.08, "node1": 3, "node2": 4, "name": "3", "c2_value": 0.000},
+    {"type": "L", "value": 8.44, "node1": 4, "node2": 5, "name": "4", "c2_value": 0.1},
+    {"type": "Rl", "value": 11.29056, "node1": 3, "node2": 7, "name": "6", "c2_value": 1.00162},
+    {"type": "L", "value": 10.17, "node1": 7, "node2": 8, "name": "7", "c2_value": 0.1},
     {"type": "R", "value": 681.0, "node1": 5, "node2": 6, "name": "5", "c2_value": 0.1},
     {"type": "C", "value": 0.0001, "node1": 6, "node2": 0, "name": "9", "c2_value": 0.1},
     {"type": "R", "value": 31013, "node1": 6, "node2": 0, "name": "10", "c2_value": 0.1},
